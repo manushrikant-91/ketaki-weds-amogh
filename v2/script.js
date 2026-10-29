@@ -118,55 +118,89 @@ const Bell = (() => {
    ====================================================== */
 function buildToran() {
   const svg = $('#toran'); if (!svg) return;
-  const W = Math.max(320, window.innerWidth), NS = 'http://www.w3.org/2000/svg';
+  const W = Math.max(320, window.innerWidth);
   svg.setAttribute('viewBox', `0 0 ${W} 150`);
-  svg.innerHTML = '';
-  const add = (parent, html) => { parent.insertAdjacentHTML('beforeend', html); return parent.lastElementChild; };
   const rnd = (a, b) => a + Math.random() * (b - a);
+  const pick = arr => arr[Math.random() * arr.length | 0];
+  let out = '';
 
-  // cord
-  add(svg, `<rect x="0" y="0" width="${W}" height="7" fill="#7A5420"/><rect x="0" y="6" width="${W}" height="2" fill="#C9A24D"/>`);
+  /* ---- shared paint: shaded marigolds, two-tone leaves, soft shadows ---- */
+  const ring = (n, rad, r, fill, rot = 0) => Array.from({ length: n }, (_, i) => {
+    const a = (i / n) * 2 * Math.PI + rot, x = Math.cos(a) * rad, y = Math.sin(a) * rad;
+    return `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${r}" fill="${fill}" stroke="rgba(120,50,0,.28)" stroke-width=".35"/>`;
+  }).join('');
+  const marigold = (id, g) =>   // a ruffled pom-pom: three rings of petals around a deep centre
+    `<symbol id="${id}" viewBox="-10 -10 20 20" overflow="visible">
+       <circle r="9.2" fill="url(#${g}-edge)"/>
+       ${ring(16, 6.4, 3.3, `url(#${g})`)}${ring(11, 3.9, 2.9, `url(#${g})`, .3)}${ring(6, 1.9, 2.4, `url(#${g}-hi)`, .6)}
+       <circle r="1.4" fill="#8A3C00" opacity=".75"/>
+     </symbol>`;
+  out += `<defs>
+    <radialGradient id="mo"><stop offset="0" stop-color="#FFC45C"/><stop offset=".55" stop-color="#EE8A0E"/><stop offset="1" stop-color="#B85200"/></radialGradient>
+    <radialGradient id="mo-hi"><stop offset="0" stop-color="#FFD98A"/><stop offset="1" stop-color="#F39A1C"/></radialGradient>
+    <radialGradient id="mo-edge"><stop offset=".6" stop-color="#C45F00"/><stop offset="1" stop-color="#7A3500"/></radialGradient>
+    <radialGradient id="my"><stop offset="0" stop-color="#FFE899"/><stop offset=".55" stop-color="#F2B518"/><stop offset="1" stop-color="#B98000"/></radialGradient>
+    <radialGradient id="my-hi"><stop offset="0" stop-color="#FFF2BF"/><stop offset="1" stop-color="#F6C53A"/></radialGradient>
+    <radialGradient id="my-edge"><stop offset=".6" stop-color="#C98E00"/><stop offset="1" stop-color="#7E5800"/></radialGradient>
+    ${[['#143A22', '#2F6E42'], ['#18432A', '#3B7D4C'], ['#10301C', '#295F3A'], ['#1E4A2C', '#4A8656']].map((c, i) =>
+      `<linearGradient id="lf${i}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${c[0]}"/><stop offset=".48" stop-color="${c[1]}"/><stop offset=".52" stop-color="${c[0]}"/><stop offset="1" stop-color="${c[0]}"/></linearGradient>`).join('')}
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7A5418"/><stop offset=".3" stop-color="#E9C978"/><stop offset=".45" stop-color="#FFF0C4"/><stop offset=".7" stop-color="#C79A42"/><stop offset="1" stop-color="#6E4A12"/>
+    </linearGradient>
+    <filter id="shade" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="3" stdDeviation="2.4" flood-color="#000" flood-opacity=".55"/></filter>
+    <filter id="far" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation=".9"/></filter>
+    ${marigold('mari-o', 'mo')}${marigold('mari-y', 'my')}
+  </defs>`;
 
-  // mango leaves hanging from the cord
-  const leaves = add(svg, '<g></g>');
-  for (let x = 10; x < W; x += 21) {
-    const len = rnd(38, 52), rot = rnd(-8, 8), d = rnd(-4.5, 0).toFixed(2);
-    add(leaves, `<g transform="translate(${x.toFixed(1)},6) rotate(${rot.toFixed(1)})"><g class="sway" style="animation-delay:${d}s;animation-duration:${rnd(3.8, 5.6).toFixed(2)}s">
-      <path d="M0 0C9 ${len * .28} 9 ${len * .74} 0 ${len}C-9 ${len * .74} -9 ${len * .28} 0 0Z" fill="url(#g-leaf)"/>
-      <path d="M0 2V${len - 4}" stroke="#7DB38A" stroke-width=".8" opacity=".6"/></g></g>`);
-  }
+  /* ---- mango leaves: a darker, softer back layer and a crisp front layer ---- */
+  const leaf = (x, len, wid, rot, grad, dur, delay) => {
+    const bend = rnd(-4, 4);
+    return `<g transform="translate(${x.toFixed(1)},5) rotate(${rot.toFixed(1)})"><g class="sway" style="animation-duration:${dur.toFixed(1)}s;animation-delay:${delay.toFixed(1)}s">
+      <path d="M0 0C${wid * 1.15} ${len * .22} ${wid * .95} ${len * .68} ${bend} ${len}C${-wid * .85} ${len * .68} ${-wid * 1.1} ${len * .22} 0 0Z" fill="url(#${grad})"/>
+      <path d="M0 1Q${(bend * .4 + wid * .12).toFixed(1)} ${len * .5} ${bend} ${len - 2}" fill="none" stroke="#9CC59A" stroke-opacity=".35" stroke-width=".8"/></g></g>`;
+  };
+  out += '<g filter="url(#far)" opacity=".75">';
+  for (let x = 4; x < W; x += 15) out += leaf(x, rnd(50, 66), rnd(8, 10), rnd(-14, 14), 'lf2', rnd(7, 10), rnd(-9, 0));
+  out += '</g><g filter="url(#shade)">';
+  for (let x = 12; x < W; x += 21) out += leaf(x, rnd(40, 54), rnd(8.5, 11), rnd(-9, 9), pick(['lf0', 'lf1', 'lf3']), rnd(6, 9), rnd(-9, 0));
+  out += '</g>';
 
-  // marigold swags between hanging points
+  /* ---- cord ---- */
+  out += `<rect x="0" y="0" width="${W}" height="7" fill="#4A3210"/>
+          <line x1="0" y1="3.5" x2="${W}" y2="3.5" stroke="#B88A3E" stroke-width="2.4" stroke-dasharray="3 2.2" opacity=".7"/>
+          <rect x="0" y="6.5" width="${W}" height="1.2" fill="#C9A24D" opacity=".8"/>`;
+
+  /* ---- marigold swags ---- */
   const span = W < 600 ? 96 : 130, n = Math.max(2, Math.round(W / span)), step = W / n;
-  const garland = add(svg, '<g></g>');
-  const flower = (x, y, r, c1, c2) =>
-    `<g transform="translate(${x.toFixed(1)},${y.toFixed(1)})"><circle r="${r}" fill="${c1}"/>` +
-    [0, 72, 144, 216, 288].map(a => `<circle cx="${(Math.cos(a * Math.PI / 180) * r * .55).toFixed(1)}" cy="${(Math.sin(a * Math.PI / 180) * r * .55).toFixed(1)}" r="${(r * .55).toFixed(1)}" fill="${c2}"/>`).join('') +
-    `<circle r="${(r * .35).toFixed(1)}" fill="#B85C00"/></g>`;
+  out += '<g filter="url(#shade)">';
   for (let i = 0; i < n; i++) {
-    const x0 = i * step, x1 = x0 + step, sag = step * 0.26;
-    for (let t = 0; t <= 1.0001; t += 1 / Math.round(step / 10)) {
-      const x = x0 + (x1 - x0) * t, y = 9 + 4 * sag * t * (1 - t);
-      const orange = Math.random() < .55;
-      add(garland, flower(x, y, 6.2, orange ? '#F08A00' : '#F6B800', orange ? '#FFA41B' : '#FFD54A'));
+    const x0 = i * step, sag = step * .26, count = Math.round(step / 8.5);
+    for (let k = 0; k <= count; k++) {
+      const t = k / count, x = x0 + step * t + rnd(-.8, .8), y = 9 + 4 * sag * t * (1 - t) + rnd(-.8, .8);
+      const s = rnd(13.5, 16.5);
+      out += `<use href="#${Math.random() < .6 ? 'mari-o' : 'mari-y'}" x="${(x - s / 2).toFixed(1)}" y="${(y - s / 2).toFixed(1)}" width="${s.toFixed(1)}" height="${s.toFixed(1)}" transform="rotate(${rnd(0, 360).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`;
     }
   }
+  out += '</g>';
 
-  // brass bells at every hanging point
-  const bells = add(svg, '<g></g>');
+  /* ---- brass bells on every hanging point ---- */
+  out += '<g filter="url(#shade)">';
   for (let i = 1; i < n; i++) {
-    const x = i * step, thread = (i % 2 ? 44 : 30) + rnd(-3, 3);
-    const g = add(bells, `<g transform="translate(${x.toFixed(1)},8)"><g class="sway bell" role="button" aria-label="Ring the bell" data-pitch="${[880, 988, 1046, 1175, 1318][i % 5]}" style="animation-delay:${rnd(-4, 0).toFixed(2)}s">
-      <line x1="0" y1="0" x2="0" y2="${thread}" stroke="#B8862F" stroke-width="1.3"/>
-      ${flower(0, thread * .45, 5.5, '#F08A00', '#FFA41B')}
-      <circle cx="0" cy="${thread + 1}" r="2.6" fill="none" stroke="#B8862F" stroke-width="1.4"/>
-      <path d="M0 ${thread + 3}c7 0 10 7 10 15l3 5h-26l3-5c0-8 3-15 10-15z" fill="url(#g-brass)" stroke="#8A6420" stroke-width=".8"/>
-      <rect x="-13" y="${thread + 22}" width="26" height="2.5" rx="1.2" fill="#9A6E22"/>
-      <circle cx="0" cy="${thread + 27}" r="3" fill="#9A6E22"/>
-      <rect x="-15" y="-2" width="30" height="${thread + 34}" fill="transparent"/></g></g>`);
-    const b = g.firstElementChild;
-    b.addEventListener('pointerdown', () => ringBell(b));
+    const x = i * step, th = (i % 2 ? 44 : 30) + rnd(-3, 3);
+    out += `<g transform="translate(${x.toFixed(1)},8)"><g class="sway bell" role="button" aria-label="Ring the bell" data-pitch="${[880, 988, 1046, 1175, 1318][i % 5]}" style="animation-delay:${rnd(-6, 0).toFixed(1)}s">
+      <line x1="0" y1="0" x2="0" y2="${th}" stroke="#8A6420" stroke-width="1.2"/>
+      <use href="#mari-o" x="-6.5" y="${(th * .42 - 6.5).toFixed(1)}" width="13" height="13"/>
+      <circle cx="0" cy="${th + 1}" r="2.5" fill="none" stroke="#9A7228" stroke-width="1.3"/>
+      <path d="M0 ${th + 3}c7 0 10 7 10 15l3 5h-26l3-5c0-8 3-15 10-15z" fill="url(#brass)"/>
+      <path d="M-4 ${th + 7}c-2 3-2.6 8-2.6 12" stroke="#FFF6D8" stroke-opacity=".55" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <rect x="-13" y="${th + 22}" width="26" height="2.6" rx="1.3" fill="#6E4A12"/>
+      <circle cx="0" cy="${th + 27}" r="3" fill="#7A5418"/>
+      <rect x="-15" y="-2" width="30" height="${th + 34}" fill="transparent"/></g></g>`;
   }
+  out += '</g>';
+
+  svg.innerHTML = out;
+  $$('.bell', svg).forEach(b => b.addEventListener('pointerdown', () => ringBell(b)));
 }
 function ringBell(b) {
   b.classList.remove('ring'); void b.getBBox(); b.classList.add('ring');
