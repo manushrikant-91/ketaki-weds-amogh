@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Ketaki &amp; Amogh · Into the Jungle · 11 – 13 December 2026</title>
+  <meta name="description" content="Ketaki weds Amogh — three days of celebration in the forests of Pench, 11 – 13 December 2026.">
+  <meta name="theme-color" content="#0B2116">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Ketaki &amp; Amogh · 11 – 13 December 2026">
+  <meta property="og:description" content="Three days of celebration in the forests of Pench. Tap to open your invitation.">
+  <meta property="og:url" content="https://manushrikant-91.github.io/ketaki-weds-amogh/v2/">
+  <meta property="og:image" content="https://manushrikant-91.github.io/ketaki-weds-amogh/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="../assets/ganesha.webp" type="image/webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Dancing+Script:wght@700&family=Noto+Serif+Devanagari:wght@600&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="../assets/jungle.jpg">
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+  <!-- Shared SVG symbols -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="g-brass" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#F6DE9A"/><stop offset=".5" stop-color="#D4A84B"/><stop offset="1" stop-color="#9A6E22"/>
+      </linearGradient>
+      <linearGradient id="g-leaf" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#3F8A55"/><stop offset="1" stop-color="#1D4A31"/>
+      </linearGradient>
+      <!-- tiger pugmark -->
+      <symbol id="paw" viewBox="0 0 40 40">
+        <path d="M20 38c-7 0-12-3.5-12-8.5 0-4.5 4-6 6.5-9 1.6-2 3.2-3 5.5-3s3.9 1 5.5 3c2.5 3 6.5 4.5 6.5 9 0 5-5 8.5-12 8.5z"/>
+        <ellipse cx="8" cy="15" rx="3.6" ry="4.8" transform="rotate(-20 8 15)"/>
+        <ellipse cx="15.5" cy="8.5" rx="3.6" ry="5"/>
+        <ellipse cx="24.5" cy="8.5" rx="3.6" ry="5"/>
+        <ellipse cx="32" cy="15" rx="3.6" ry="4.8" transform="rotate(20 32 15)"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="jungle-bg" aria-hidden="true"></div>
+  <div class="mood" id="mood" data-mood="forest" aria-hidden="true"></div>
+  <canvas id="fireflies" aria-hidden="true"></canvas>
+  <canvas id="petals" aria-hidden="true"></canvas>
+
+  <!-- ============ OPENING GATE ============ -->
+  <div class="gate" id="gate" hidden>
+    <div class="gate-panel left"></div>
+    <div class="gate-panel right"></div>
+    <div class="gate-content">
+      <span class="ganesha-gold" role="img" aria-label="Lord Ganesha"></span>
+      <p class="shloka" lang="mr">॥ श्री गणेशाय नमः ॥</p>
+      <p class="gate-kicker">You are invited to</p>
+      <p class="gate-names">Ketaki <span>&amp;</span> Amogh</p>
+      <p class="gate-sub">Three days · The forests of Pench</p>
+      <button class="seal" id="gate-open" type="button" aria-label="Open the invitation">
+        <span class="seal-ring"></span>
+        <span class="seal-mono">K<i>&amp;</i>A</span>
+      </button>
+      <p class="gate-hint">Tap the seal to open</p>
+    </div>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero" id="home">
+    <svg class="toran" id="toran" aria-hidden="true"></svg>
+    <img class="hero-fern l" src="../assets/fern-left.webp" alt="" aria-hidden="true">
+    <img class="hero-fern r" src="../assets/fern-right.webp" alt="" aria-hidden="true">
+
+    <div class="hero-inner">
+      <span class="ganesha-gold" role="img" aria-label="Lord Ganesha"></span>
+      <p class="shloka" lang="mr">॥ श्री गणेशाय नमः ॥</p>
+      <p class="hero-lead">With hearts full of love and happiness, we invite you to celebrate the beginning of a beautiful forever of</p>
+
+      <h1 class="names">
+        <span class="name write" style="--d:.2s">Ketaki</span>
+        <span class="parents fade" style="--d:1.4s">Daughter of Sanjay Padwad &amp; Ashwini S. Padwad</span>
+        <span class="amp fade" style="--d:1.7s">&amp;</span>
+        <span class="name write" style="--d:1.9s">Amogh</span>
+        <span class="parents fade" style="--d:3.1s">Son of Rajeev Indurkar &amp; Vaishali R. Indurkar</span>
+      </h1>
+
+      <div class="date-plate fade" style="--d:3.4s">
+        <span class="dp-side">Fri<b>11</b></span>
+        <span class="dp-main">Sat<b>12</b><small>December 2026</small></span>
+        <span class="dp-side">Sun<b>13</b></span>
+      </div>
+      <p class="hero-place fade" style="--d:3.6s">Olive Resort · Pench, Madhya Pradesh</p>
+    </div>
+
+    <a class="scroll-cue" href="#countdown" aria-label="Scroll down">
+      <svg><use href="#paw"/></svg><span>Follow the trail</span>
+    </a>
+  </header>
+
+  <main>
+    <!-- ============ COUNTDOWN ============ -->
+    <section class="countdown reveal" id="countdown" data-mood="forest" aria-label="Countdown to the muhurat">
+      <p class="eyebrow">Until the muhurat</p>
+      <div class="rings">
+        <div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44"/><circle class="arc" id="arc-days" cx="50" cy="50" r="44"/></svg><span id="cd-days">--</span><small>Days</small></div>
+        <div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44"/><circle class="arc" id="arc-hours" cx="50" cy="50" r="44"/></svg><span id="cd-hours">--</span><small>Hours</small></div>
+        <div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44"/><circle class="arc" id="arc-mins" cx="50" cy="50" r="44"/></svg><span id="cd-mins">--</span><small>Mins</small></div>
+        <div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44"/><circle class="arc" id="arc-secs" cx="50" cy="50" r="44"/></svg><span id="cd-secs">--</span><small>Secs</small></div>
+      </div>
+      <p class="cd-note" id="cd-note">Saturday, 12 December · 12:07 PM IST</p>
+      <button class="btn btn-ghost" type="button" data-open-cal>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        Save the dates
+      </button>
+    </section>
+
+    <div class="trail" aria-hidden="true"></div>
+
+    <!-- ============ THE THREE DAYS ============ -->
+    <section class="days reveal" id="days" aria-labelledby="days-title">
+      <p class="eyebrow">Three days in the jungle</p>
+      <h2 class="section-title" id="days-title">The Celebrations</h2>
+
+      <div class="day-switch" role="tablist" aria-label="Choose a day">
+        <button role="tab" type="button" data-day="0" aria-selected="true"><b>11</b>Haldi &amp; Sangeet</button>
+        <button role="tab" type="button" data-day="1" aria-selected="false"><b>12</b>The Big Day</button>
+        <button role="tab" type="button" data-day="2" aria-selected="false"><b>13</b>Vidai</button>
+        <span class="switch-pill" aria-hidden="true"></span>
+      </div>
+
+      <div class="days-track" id="days-track">
+        <!-- day cards are rendered from the schedule in script.js -->
+      </div>
+      <p class="swipe-hint" aria-hidden="true">Swipe for the next day →</p>
+      <p class="fine">Timings are tentative and may change slightly. We will keep you posted.</p>
+    </section>
+
+    <div class="trail" aria-hidden="true"></div>
+
+    <!-- ============ VENUE ============ -->
+    <section class="venue reveal" id="venue" data-mood="forest" aria-labelledby="venue-title">
+      <p class="eyebrow">Where the jungle meets forever</p>
+      <h2 class="section-title" id="venue-title">Olive Resort, Pench</h2>
+      <p class="venue-sub">Turia Gate, Pench, Madhya Pradesh — deep in the forests that inspired <i>The Jungle Book</i>.</p>
+
+      <div class="venue-card">
+        <div class="map">
+          <iframe title="Map of Olive Resort, Pench" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps?q=Olive%20Resort%2C%20Turia%20Pench%2C%20Awarghani%2C%20Madhya%20Pradesh%20480881&output=embed"></iframe>
+        </div>
+        <ol class="journey">
+          <li><span class="j-ico"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><div><b>Arrive at Pench</b><span>11 December, from 12 PM</span></div></li>
+          <li><span class="j-ico"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M4 11h16M8 21v-4M16 21v-4"/></svg></span><div><b>Hop on our buses &amp; cars</b><span>They’ll take you to Olive Resort</span></div></li>
+          <li><span class="j-ico"><svg viewBox="0 0 24 24"><path d="M3 21V8l9-5 9 5v13M9 21v-6h6v6"/></svg></span><div><b>Head straight to your room</b><span>Rooms are pre-assigned — welcome drinks await</span></div></li>
+        </ol>
+        <a class="btn btn-gold btn-block" target="_blank" rel="noopener"
+           href="https://www.google.com/maps/dir/?api=1&destination=Olive%20Resort%2C%20Turia%20Pench%2C%20Awarghani%2C%20Madhya%20Pradesh%20480881">Get directions</a>
+      </div>
+
+      <h3 class="gtk-title">Good to know</h3>
+      <div class="gtk">
+        <div class="gtk-card"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><b>Chilly nights</b><span>December nights in Pench are cold — pack a shawl or jacket.</span></div>
+        <div class="gtk-card"><svg viewBox="0 0 24 24"><path d="M3 21V8l9-5 9 5v13M9 21v-6h6v6"/></svg><b>Rooms are ready</b><span>Pre-assigned, so you can head straight in when you arrive.</span></div>
+        <div class="gtk-card"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M4 11h16M8 21v-4M16 21v-4"/></svg><b>Transport sorted</b><span>Buses and cars from Pench to Olive Resort on 11 December.</span></div>
+        <div class="gtk-card"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><b>Check-out</b><span>By 11:30 AM on Sunday, 13 December.</span></div>
+      </div>
+    </section>
+
+    <div class="trail" aria-hidden="true"></div>
+
+    <!-- ============ RSVP ============ -->
+    <section class="rsvp reveal" id="rsvp" data-mood="forest" aria-labelledby="rsvp-title">
+      <div class="paper">
+        <span class="ganesha-gold small" aria-hidden="true"></span>
+        <h2 class="paper-title" id="rsvp-title">Will you join us?</h2>
+        <p class="paper-lead">Let us know so we can plan your stay and travel.</p>
+
+        <form id="rsvp-form" novalidate>
+          <label class="field"><span>Your full name</span>
+            <input name="name" type="text" autocomplete="name" required maxlength="80"></label>
+          <label class="field"><span>Phone / WhatsApp</span>
+            <input name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="Optional"></label>
+
+          <fieldset class="field"><legend>Will you be able to attend?</legend>
+            <div class="choice">
+              <label><input type="radio" name="attending" value="Yes" required><span>Yes, with joy!</span></label>
+              <label><input type="radio" name="attending" value="No"><span>Sadly, no</span></label>
+            </div>
+          </fieldset>
+
+          <div class="if-yes" hidden>
+            <div class="field"><span class="flabel">Number of guests (including you)</span>
+              <div class="stepper">
+                <button type="button" data-step="-1" aria-label="One fewer guest">−</button>
+                <output id="guest-out">1</output>
+                <button type="button" data-step="1" aria-label="One more guest">+</button>
+                <input type="hidden" name="guests" value="1">
+              </div>
+            </div>
+            <fieldset class="field"><legend>Which days will you be with us?</legend>
+              <div class="choice three">
+                <label><input type="checkbox" name="days" value="11 Dec" checked><span>11 Dec</span></label>
+                <label><input type="checkbox" name="days" value="12 Dec" checked><span>12 Dec</span></label>
+                <label><input type="checkbox" name="days" value="13 Dec" checked><span>13 Dec</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="field"><legend>Need the bus / car from Pench on 11 Dec?</legend>
+              <div class="choice">
+                <label><input type="radio" name="pickup" value="Yes"><span>Yes, please</span></label>
+                <label><input type="radio" name="pickup" value="No"><span>No, I’ll manage</span></label>
+              </div>
+            </fieldset>
+          </div>
+
+          <label class="field"><span>A note for Ketaki &amp; Amogh</span>
+            <textarea name="message" rows="3" maxlength="500" placeholder="Optional"></textarea></label>
+
+          <button class="btn btn-dark btn-block" type="submit">Send my RSVP</button>
+          <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ THANK YOU ============ -->
+    <section class="thanks reveal" data-mood="dawn">
+      <h2 class="thanks-title">Thank you for being our roots</h2>
+      <p>Every blessing, every laugh and every journey you take to be with us means the world.
+        We can’t wait to dance, celebrate and begin forever with you.</p>
+      <p class="sign">Ketaki &amp; Amogh</p>
+      <svg class="trail-end" aria-hidden="true"><use href="#paw"/></svg>
+    </section>
+  </main>
+
+  <!-- live banner (shown only during 11–13 Dec) -->
+    <div class="live" id="live" hidden>
+      <span class="live-dot"></span><span id="live-text"></span>
+    </div>
+
+  <!-- ============ DOCK ============ -->
+  <nav class="dock" id="dock" aria-label="Sections">
+    <a href="#home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v10H3z"/></svg><span>Home</span></a>
+    <a href="#days"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Days</span></a>
+    <a href="#venue"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Venue</span></a>
+    <a href="#rsvp" class="dock-cta"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg><span>RSVP</span></a>
+    <button type="button" id="music-btn" class="dock-music" aria-label="Play music" aria-pressed="false" hidden>
+      <svg class="ico-note" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>
+      <span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span>Music</span>
+    </button>
+  </nav>
+  <audio id="bg-music" src="../assets/music.mp3" loop preload="none"></audio>
+
+  <!-- Add-to-calendar chooser -->
+  <dialog id="cal-dialog" class="cal-dialog">
+    <form method="dialog">
+      <p class="eyebrow">Add to your calendar</p>
+      <a class="btn btn-dark btn-block" id="cal-google-all" target="_blank" rel="noopener">All 3 days · Google</a>
+      <a class="btn btn-dark btn-block" id="cal-google-muhurat" target="_blank" rel="noopener">Just the muhurat · Google</a>
+      <button class="btn btn-gold btn-block" type="button" id="cal-ics">Apple / Outlook (.ics)</button>
+      <button class="btn-link" value="close">Close</button>
+    </form>
+  </dialog>
+
+  <noscript><style>.reveal,.fade,.write{opacity:1!important;clip-path:none!important;transform:none!important}</style></noscript>
+  <script src="script.js?v=1"></script>
+</body>
+</html>
