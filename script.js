@@ -186,6 +186,62 @@ document.documentElement.classList.add('js');
   }
 })();
 
+/* ---------- Background music (tap to play, gentle fades) ---------- */
+(() => {
+  const audio = document.getElementById('bg-music');
+  const btn = document.getElementById('music-btn');
+  const label = btn.querySelector('.music-label');
+  const MAX_VOL = 0.45;
+  let fadeTimer, wantPlaying = false;
+
+  // Only show the button if the music file is actually there.
+  fetch(audio.getAttribute('src'), { method: 'HEAD' })
+    .then(r => { if (r.ok) { btn.hidden = false; setTimeout(() => btn.classList.add('compact'), 6000); } })
+    .catch(() => {});
+
+  function fadeTo(target, ms, done) {
+    clearInterval(fadeTimer);
+    const start = audio.volume, steps = Math.max(1, Math.round(ms / 50));
+    let i = 0;
+    fadeTimer = setInterval(() => {
+      i++;
+      audio.volume = Math.min(1, Math.max(0, start + (target - start) * (i / steps)));
+      if (i >= steps) { clearInterval(fadeTimer); if (done) done(); }
+    }, 50);
+  }
+
+  function setUi(playing) {
+    btn.classList.toggle('playing', playing);
+    btn.setAttribute('aria-pressed', String(playing));
+    btn.setAttribute('aria-label', playing ? 'Pause music' : 'Play music');
+    label.textContent = playing ? 'Pause' : 'Play music';
+  }
+
+  async function play() {
+    wantPlaying = true;
+    audio.volume = 0;
+    try { await audio.play(); } catch (e) { wantPlaying = false; setUi(false); return; }
+    setUi(true);
+    fadeTo(MAX_VOL, 1800);
+  }
+  function pause(remember = true) {
+    if (remember) wantPlaying = false;
+    setUi(false);
+    fadeTo(0, 700, () => audio.pause());
+  }
+
+  btn.addEventListener('click', () => {
+    btn.classList.add('compact');
+    if (audio.paused || !btn.classList.contains('playing')) play(); else pause();
+  });
+
+  // Pause while the tab/app is in the background; resume if it was playing.
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && !audio.paused) pause(false);
+    else if (!document.hidden && wantPlaying && audio.paused) play();
+  });
+})();
+
 /* ---------- Fireflies ---------- */
 (() => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;

@@ -338,6 +338,35 @@ main {
 .sign { font-family: var(--script); color: var(--red); font-size: clamp(34px, 10vw, 46px); white-space: nowrap; margin: 18px 0 0; line-height: 1.1; }
 
 
+/* ---------- Music button ---------- */
+.music-btn {
+  position: fixed; z-index: 20;
+  right: 16px; bottom: calc(env(safe-area-inset-bottom) + 16px);
+  display: flex; align-items: center; gap: 8px;
+  height: 50px; min-width: 50px; padding: 0 15px;
+  border-radius: 999px; cursor: pointer;
+  background: rgba(12, 34, 22, .85); color: var(--gold-light);
+  border: 1px solid var(--gold);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .35);
+  font-family: var(--caps); font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+  transition: transform .2s ease;
+}
+.music-btn[hidden] { display: none; }
+.music-btn:hover { transform: scale(1.04); }
+.music-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.music-label { white-space: nowrap; overflow: hidden; max-width: 120px; transition: max-width .5s ease, opacity .4s ease; }
+.music-btn.compact .music-label { max-width: 0; opacity: 0; margin-left: -8px; }
+.music-btn.compact { padding: 0; justify-content: center; width: 50px; }
+.music-btn:not(.playing) { animation: beckon 2.4s ease-in-out infinite; }
+@keyframes beckon { 0%, 100% { box-shadow: 0 10px 26px rgba(0,0,0,.35), 0 0 0 0 rgba(201,162,77,.5); } 50% { box-shadow: 0 10px 26px rgba(0,0,0,.35), 0 0 0 8px rgba(201,162,77,0); } }
+.bars { display: none; align-items: flex-end; gap: 3px; height: 18px; }
+.bars i { width: 3px; height: 100%; background: var(--gold-light); border-radius: 2px; transform-origin: bottom; animation: eq 1s ease-in-out infinite; }
+.bars i:nth-child(2) { animation-delay: -.3s; } .bars i:nth-child(3) { animation-delay: -.6s; } .bars i:nth-child(4) { animation-delay: -.15s; }
+@keyframes eq { 0%, 100% { transform: scaleY(.3); } 50% { transform: scaleY(1); } }
+.music-btn.playing .bars { display: flex; }
+.music-btn.playing .ico-note { display: none; }
+
 /* ---------- Calendar dialog ---------- */
 .cal-dialog {
   border: 2px solid var(--gold); border-radius: 18px; padding: 26px 22px 18px;
@@ -370,6 +399,7 @@ main {
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .music-btn, .bars i { animation: none !important; }
   .fern { animation: none; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
 }
