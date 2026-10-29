@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Dancing+Script:wght@700&family=Noto+Serif+Devanagari:wght@600&family=Pinyon+Script&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="../assets/jungle.jpg">
-  <link rel="stylesheet" href="style.css?v=1">
+  <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
   <!-- Shared SVG symbols -->
@@ -100,6 +100,7 @@
   </header>
 
   <main>
+    <svg class="tiger-trail" id="tiger-trail" aria-hidden="true"></svg>
     <!-- ============ COUNTDOWN ============ -->
     <section class="countdown reveal" id="countdown" data-mood="forest" aria-label="Countdown to the muhurat">
       <p class="eyebrow">Until the muhurat</p>
@@ -116,28 +117,22 @@
       </button>
     </section>
 
-    <div class="trail" aria-hidden="true"></div>
-
     <!-- ============ THE THREE DAYS ============ -->
     <section class="days reveal" id="days" aria-labelledby="days-title">
       <p class="eyebrow">Three days in the jungle</p>
       <h2 class="section-title" id="days-title">The Celebrations</h2>
 
-      <div class="day-switch" role="tablist" aria-label="Choose a day">
-        <button role="tab" type="button" data-day="0" aria-selected="true"><b>11</b>Haldi &amp; Sangeet</button>
-        <button role="tab" type="button" data-day="1" aria-selected="false"><b>12</b>The Big Day</button>
-        <button role="tab" type="button" data-day="2" aria-selected="false"><b>13</b>Vidai</button>
-        <span class="switch-pill" aria-hidden="true"></span>
-      </div>
+      <nav class="day-bar" id="day-bar" aria-label="Jump to a day">
+        <a href="#day-0" data-day="0"><b>11</b><span>Haldi &amp; Sangeet</span></a>
+        <a href="#day-1" data-day="1"><b>12</b><span>The Big Day</span></a>
+        <a href="#day-2" data-day="2"><b>13</b><span>Vidai</span></a>
+      </nav>
 
-      <div class="days-track" id="days-track">
+      <div class="days-list" id="days-list">
         <!-- day cards are rendered from the schedule in script.js -->
       </div>
-      <p class="swipe-hint" aria-hidden="true">Swipe for the next day →</p>
       <p class="fine">Timings are tentative and may change slightly. We will keep you posted.</p>
     </section>
-
-    <div class="trail" aria-hidden="true"></div>
 
     <!-- ============ VENUE ============ -->
     <section class="venue reveal" id="venue" data-mood="forest" aria-labelledby="venue-title">
@@ -167,8 +162,6 @@
         <div class="gtk-card"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><b>Check-out</b><span>By 11:30 AM on Sunday, 13 December.</span></div>
       </div>
     </section>
-
-    <div class="trail" aria-hidden="true"></div>
 
     <!-- ============ RSVP ============ -->
     <section class="rsvp reveal" id="rsvp" data-mood="forest" aria-labelledby="rsvp-title">
@@ -229,7 +222,10 @@
       <p>Every blessing, every laugh and every journey you take to be with us means the world.
         We can’t wait to dance, celebrate and begin forever with you.</p>
       <p class="sign">Ketaki &amp; Amogh</p>
-      <svg class="trail-end" aria-hidden="true"><use href="#paw"/></svg>
+      <button class="replay" id="replay" type="button">
+        <span class="replay-seal" aria-hidden="true">K<i>&amp;</i>A</span>
+        <span>Open the invitation again</span>
+      </button>
     </section>
   </main>
 
@@ -264,6 +260,6 @@
   </dialog>
 
   <noscript><style>.reveal,.fade,.write{opacity:1!important;clip-path:none!important;transform:none!important}</style></noscript>
-  <script src="script.js?v=1"></script>
+  <script src="script.js?v=2"></script>
 </body>
 </html>

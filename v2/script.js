@@ -178,9 +178,9 @@ function ringBell(b) {
    Day cards
    ====================================================== */
 function renderDays() {
-  const track = $('#days-track');
-  track.innerHTML = DAYS.map((d, di) => `
-    <article class="day-card" data-theme="${d.theme}" id="day-${di}" role="tabpanel" aria-label="${d.title}">
+  const list = $('#days-list');
+  list.innerHTML = DAYS.map((d, di) => `
+    <article class="day-card" data-theme="${d.theme}" id="day-${di}" aria-label="${d.title}">
       <header class="day-head">
         ${ICONS[d.icon]}
         <div class="day-num">${d.weekday} · ${+d.date.slice(8)} December</div>
@@ -201,43 +201,34 @@ function renderDays() {
       </ol>
     </article>`).join('');
 
-  $$('[data-petals]', track).forEach(b => b.addEventListener('click', e => {
-    const r = e.currentTarget.getBoundingClientRect();
-    Petals.burst(r.left + r.width / 2, r.top, 90);
-  }));
+  $$('[data-petals]', list).forEach(b => b.addEventListener('click', () => Petals.shower()));
 }
 
-const DaySwitch = (() => {
-  let idx = 0, raf;
-  const track = () => $('#days-track');
-  function set(i, scroll) {
-    idx = Math.max(0, Math.min(DAYS.length - 1, i));
-    $$('.day-switch [role=tab]').forEach((b, j) => b.setAttribute('aria-selected', String(j === idx)));
-    $('.switch-pill').style.transform = `translateX(${idx * 100}%)`;
-    const cards = $$('.day-card');
-    cards.forEach((c, j) => c.classList.toggle('shown', j === idx));
-    sizeTrack();
-    if (scroll) track().scrollTo({ left: idx * track().clientWidth, behavior: REDUCED ? 'auto' : 'smooth' });
-    if (Mood.inDays) Mood.set(DAYS[idx].theme);
-  }
-  function sizeTrack() {
-    const card = $$('.day-card')[idx];
-    if (card) track().style.height = card.offsetHeight + 'px';
+const DayNav = (() => {
+  let idx = 0;
+  function set(i) {
+    idx = i;
+    $$('#day-bar a').forEach((a, k) => a.setAttribute('aria-current', String(k === i)));
+    if (Mood.inDays) Mood.set(DAYS[i].theme);
   }
   function init() {
-    $$('.day-switch [role=tab]').forEach(b => b.addEventListener('click', () => set(+b.dataset.day, true)));
-    track().addEventListener('scroll', () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        const i = Math.round(track().scrollLeft / track().clientWidth);
-        if (i !== idx) set(i, false);
-      });
-    }, { passive: true });
-    if ('ResizeObserver' in window) new ResizeObserver(sizeTrack).observe(track());
-    window.addEventListener('resize', () => { track().scrollLeft = idx * track().clientWidth; sizeTrack(); });
-    set(0, false);
+    set(0);
+    if (!('IntersectionObserver' in window)) { $$('.day-card').forEach(c => c.classList.add('shown')); return; }
+    // which day is under the reading line (just below the sticky bar)
+    let raf;
+    const spy = () => {
+      const line = innerHeight * 0.4;
+      let i = 0;
+      $$('.day-card').forEach((c, k) => { if (c.getBoundingClientRect().top <= line) i = k; });
+      if (i !== idx) set(i);
+    };
+    addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(spy); }, { passive: true });
+    // reveal each day's timeline as it scrolls in
+    const show = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('shown'); show.unobserve(e.target); } }),
+      { rootMargin: '0px 0px -15% 0px' });
+    $$('.day-card').forEach(c => show.observe(c));
   }
-  return { init, set, sizeTrack, get idx() { return idx; } };
+  return { init, get idx() { return idx; } };
 })();
 
 /* ======================================================
@@ -251,7 +242,7 @@ const Mood = {
     const io = new IntersectionObserver(entries => {
       entries.forEach(en => {
         if (!en.isIntersecting) return;
-        if (en.target.id === 'days') { Mood.inDays = true; Mood.set(DAYS[DaySwitch.idx].theme); }
+        if (en.target.id === 'days') { Mood.inDays = true; Mood.set(DAYS[DayNav.idx].theme); }
         else { Mood.inDays = false; Mood.set(en.target.dataset.mood || 'forest'); }
       });
     }, { rootMargin: '-45% 0px -45% 0px' });
@@ -289,7 +280,8 @@ function updateLive() {
   $('#live-text').textContent = nowLi
     ? `Happening now: ${name(nowLi)}` + (nextLi ? ` · Next: ${name(nextLi)} at ${time(nextLi)}` : '')
     : nextLi ? `Coming up at ${time(nextLi)}: ${name(nextLi)}` : `That’s a wrap for ${DAYS[di].title.toLowerCase()} — see you tomorrow!`;
-  if (!updateLive.done) { DaySwitch.set(di, true); updateLive.done = true; }
+  banner.onclick = () => (nowLi || nextLi || card).scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'center' });
+  banner.style.cursor = 'pointer';
 }
 
 /* ======================================================
@@ -357,7 +349,7 @@ function initRsvp() {
   form.addEventListener('change', e => {
     if (e.target.name === 'attending') {
       yes.hidden = e.target.value !== 'Yes';
-      if (e.target.value === 'Yes') { const r = e.target.getBoundingClientRect(); Petals.burst(r.left + r.width / 2, r.top, 40); }
+      if (e.target.value === 'Yes') { const r = e.target.getBoundingClientRect(); Petals.drift(r.left + r.width / 2, r.top, 10); }
     }
     const f = e.target.closest('.field'); if (f) f.classList.remove('invalid');
   });
@@ -395,7 +387,7 @@ function initRsvp() {
         <p class="paper-lead">${isYes ? `Thank you, ${escapeHtml(name)}. Your RSVP is saved and we can’t wait to celebrate with you.`
                                       : `Thank you for letting us know, ${escapeHtml(name)}. We’ll carry your blessings with us.`}</p></div>`;
       $('#rsvp').scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
-      if (isYes) { Petals.shower(160); Bell.chime(1046); Bell.chime(1318, .18); Bell.chime(1568, .36); }
+      if (isYes) { Petals.shower(); Bell.chime(1046); Bell.chime(1318, .18); Bell.chime(1568, .36); }
     } catch (err) {
       console.error('RSVP failed:', err);
       setStatus(err.name === 'AbortError' ? 'This is taking too long — please check your connection and try again.'
@@ -428,37 +420,90 @@ const Music = (() => {
     if (document.hidden && !audio.paused) pause(false);
     else if (!document.hidden && want && audio.paused) play();
   });
-  return { play, ready };
+  return { play, pause, ready };
 })();
 
 /* ======================================================
-   Petals (marigold, rose & jasmine)
+   Petals — marigold, rose & jasmine that drift, sway and tumble
    ====================================================== */
 const Petals = (() => {
   const cv = $('#petals'), ctx = cv.getContext('2d'), DPR = Math.min(devicePixelRatio || 1, 2);
-  const COLORS = ['#F08A00', '#FFA41B', '#F6B800', '#FFD54A', '#C2185B', '#E53950', '#FFF8EC'];
-  let ps = [], running = false, W, H;
+  // [tip colour, base colour, length range, width ratio, tip notch, how common]
+  const KINDS = [
+    { c: ['#FFC24A', '#E07B00'], len: [12, 17], wr: .46, notch: .1, n: 5 },   // orange marigold
+    { c: ['#FFE48A', '#EFAE00'], len: [11, 16], wr: .46, notch: .1, n: 3 },    // yellow marigold
+    { c: ['#F27A92', '#A3153A'], len: [15, 21], wr: .78, notch: .16, n: 2 },  // rose
+    { c: ['#FFFFFF', '#E9DFC9'], len: [11, 14], wr: .5, notch: -.06, n: 2 }    // jasmine
+  ];
+  const sprites = [];
+  KINDS.forEach(k => {
+    for (let v = 0; v < 4; v++) {
+      const L = k.len[0] + Math.random() * (k.len[1] - k.len[0]), W = L * k.wr * (0.85 + Math.random() * .3);
+      const c = document.createElement('canvas'), s = 3;               // draw at 3× for crispness
+      c.width = Math.ceil((W + 4) * s); c.height = Math.ceil((L + 4) * s);
+      const g = c.getContext('2d'); g.scale(s, s); g.translate((W + 4) / 2, (L + 4) / 2);
+      g.beginPath();
+      g.moveTo(0, -L / 2);
+      g.bezierCurveTo(W * .62, -L * .32, W * .58, L * .32, W * .24, L / 2);
+      g.quadraticCurveTo(0, L / 2 - L * k.notch, -W * .24, L / 2);
+      g.bezierCurveTo(-W * .58, L * .32, -W * .62, -L * .32, 0, -L / 2);
+      const gr = g.createLinearGradient(0, -L / 2, 0, L / 2);
+      gr.addColorStop(0, k.c[1]); gr.addColorStop(.55, k.c[0]); gr.addColorStop(1, k.c[0]);
+      g.fillStyle = gr; g.fill();
+      g.globalAlpha = .18; g.strokeStyle = k.c[1]; g.lineWidth = .5;                  // soft vein
+      g.beginPath(); g.moveTo(0, -L / 2 + 1); g.quadraticCurveTo(W * .08, 0, 0, L * .3); g.stroke();
+      g.globalAlpha = .25; g.fillStyle = '#fff';                                        // sheen
+      g.beginPath(); g.ellipse(-W * .14, -L * .05, W * .1, L * .22, -.2, 0, 6.283); g.fill();
+      for (let i = 0; i < k.n; i++) sprites.push({ img: c, w: W + 4, h: L + 4 });
+    }
+  });
+
+  let W, H, live = [], queue = [], raf = 0, last = 0;
   function size() { W = innerWidth; H = innerHeight; cv.width = W * DPR; cv.height = H * DPR; cv.style.width = W + 'px'; cv.style.height = H + 'px'; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
   size(); addEventListener('resize', size);
-  function spawn(x, y, vx, vy) {
-    ps.push({ x, y, vx, vy, r: Math.random() * 6.28, vr: (Math.random() - .5) * .2, w: 5 + Math.random() * 5, h: 3 + Math.random() * 3,
-      c: COLORS[Math.random() * COLORS.length | 0], ph: Math.random() * 6.28, life: 0 });
+
+  function make(x, y, at) {
+    const z = .55 + Math.random() * .6;                                // depth: small = far away
+    queue.push({ at, x, y, z, sp: sprites[Math.random() * sprites.length | 0],
+      vy: .35 + z * .55, swayA: .5 + Math.random() * 1.1, swayF: .010 + Math.random() * .016, ph: Math.random() * 6.283,
+      flipF: .015 + Math.random() * .035, fl: Math.random() * 6.283, rot: Math.random() * 6.283, vr: (Math.random() - .5) * .012,
+      a: 0, maxA: .55 + z * .4 });
   }
-  function loop() {
+  function frame(t) {
+    const k = Math.min(3, (t - (last || t)) / 16.7 || 1); last = t;
+    while (queue.length && queue[0].at <= t) live.push(queue.shift());
     ctx.clearRect(0, 0, W, H);
-    ps = ps.filter(p => p.y < H + 30 && p.life < 900);
-    for (const p of ps) {
-      p.life++; p.ph += .05; p.vy = Math.min(p.vy + .045, 1.6); p.vx *= .985;
-      p.x += p.vx + Math.sin(p.ph) * .7; p.y += p.vy; p.r += p.vr;
-      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.scale(1, Math.abs(Math.cos(p.ph)) * .7 + .3);
-      ctx.fillStyle = p.c; ctx.beginPath(); ctx.ellipse(0, 0, p.w, p.h, 0, 0, 6.283); ctx.fill(); ctx.restore();
+    const wind = Math.sin(t * .00035) * .35 + Math.sin(t * .0011) * .12;
+    live = live.filter(p => p.y < H + 40);
+    for (const p of live) {
+      p.ph += p.swayF * k; p.fl += p.flipF * k; p.rot += p.vr * k;
+      p.x += (Math.cos(p.ph) * p.swayA * .55 + wind) * p.z * k;
+      p.y += p.vy * k * (.7 + .3 * Math.abs(Math.sin(p.ph)));          // slows at each end of the swing, like a real petal
+      p.a = Math.min(p.maxA, p.a + .03 * k);
+      const flip = Math.cos(p.fl), sx = (Math.abs(flip) < .12 ? .12 * Math.sign(flip || 1) : flip) * p.z;
+      ctx.save();
+      ctx.globalAlpha = p.a;
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot + Math.sin(p.ph) * .6); ctx.scale(sx, p.z);
+      ctx.drawImage(p.sp.img, -p.sp.w / 2, -p.sp.h / 2, p.sp.w, p.sp.h);
+      ctx.restore();
     }
-    if (ps.length) requestAnimationFrame(loop); else { running = false; ctx.clearRect(0, 0, W, H); }
+    if (live.length || queue.length) raf = requestAnimationFrame(frame);
+    else { raf = 0; last = 0; ctx.clearRect(0, 0, W, H); }
   }
-  function go() { if (!running) { running = true; requestAnimationFrame(loop); } }
+  function go() { queue.sort((a, b) => a.at - b.at); if (!raf) raf = requestAnimationFrame(frame); }
   return {
-    burst(x, y, n = 60) { if (REDUCED) return; for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + (Math.random() - .5) * 2.4, s = 3 + Math.random() * 6; spawn(x, y, Math.cos(a) * s, Math.sin(a) * s); } go(); },
-    shower(n = 120) { if (REDUCED) return; for (let i = 0; i < n; i++) spawn(Math.random() * W, -20 - Math.random() * H * .8, (Math.random() - .5) * 1.2, .5 + Math.random()); go(); }
+    // a gentle fall across the whole screen, spread over a few seconds
+    shower(n = innerWidth < 640 ? 34 : 56, spread = 3200) {
+      if (REDUCED) return; const t0 = performance.now();
+      for (let i = 0; i < n; i++) make(Math.random() * W * 1.1 - W * .05, -20 - Math.random() * 30, t0 + Math.random() * spread);
+      go();
+    },
+    // a handful of petals let go just above a spot
+    drift(x, y, n = 10) {
+      if (REDUCED) return; const t0 = performance.now();
+      for (let i = 0; i < n; i++) make(x + (Math.random() - .5) * 120, y - 30 - Math.random() * 60, t0 + Math.random() * 700);
+      go();
+    }
   };
 })();
 
@@ -496,20 +541,11 @@ const Petals = (() => {
    Scroll: reveals, pugmark trails, dock highlight, parallax
    ====================================================== */
 function initScroll() {
-  // pugmark trails
-  $$('.trail').forEach((t, ti) => {
-    t.innerHTML = Array.from({ length: 6 }, (_, i) => {
-      const left = 45 + (i % 2 ? 22 : -22) + (ti % 2 ? -10 : 10) * Math.sin(i), top = i * 24;
-      return `<svg style="left:${left}px;top:${top}px;transform-origin:center;transition-delay:${i * 180}ms" viewBox="0 0 40 40"><g transform="rotate(${170 + (i % 2 ? 10 : -10)} 20 20)"><use href="#paw"/></g></svg>`;
-    }).join('');
-  });
-
-  const reveal = $$('.reveal, .trail');
+  const reveal = $$('.reveal');
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver(es => es.forEach(e => {
       if (e.isIntersecting) {
         e.target.classList.add('in'); io.unobserve(e.target);
-        if (e.target.id === 'days') $$('.day-card')[DaySwitch.idx].classList.add('shown');
       }
     }), { rootMargin: '0px 0px -10% 0px', threshold: .05 });
     reveal.forEach(el => io.observe(el));
@@ -542,30 +578,87 @@ function initScroll() {
    ====================================================== */
 function initGate() {
   const gate = $('#gate'), body = document.body;
-  let seen = false;
-  try { seen = sessionStorage.getItem('ka-opened') === '1'; } catch {}
-  const open = () => body.classList.add('open');
-  if (seen || REDUCED) { open(); return; }
-
-  gate.hidden = false; body.classList.add('locked');
+  let opening = false;
+  const show = () => {
+    opening = false;
+    gate.classList.remove('opening'); gate.hidden = false;
+    body.classList.remove('open'); body.classList.add('locked');
+    $('#gate-open').focus({ preventScroll: true });
+  };
   const go = async () => {
-    if (gate.classList.contains('opening')) return;
-    try { sessionStorage.setItem('ka-opened', '1'); } catch {}
+    if (opening) return; opening = true;
     Bell.ensure();
     Bell.chime(880); Bell.chime(1175, .22); Bell.chime(1568, .44, .07);
     gate.classList.add('opening');
     await Music.ready; Music.play();
     setTimeout(() => {
-      open(); Petals.shower(110);
-      $$('#toran .bell').forEach((b, i) => setTimeout(() => b.classList.add('ring'), i * 90));
-      setTimeout(() => $$('#toran .bell').forEach(b => b.classList.remove('ring')), 2600);
+      body.classList.add('open');
+      Petals.shower();
+      $$('#toran .bell').forEach((b, i) => setTimeout(() => b.classList.add('ring'), i * 110));
+      setTimeout(() => $$('#toran .bell').forEach(b => b.classList.remove('ring')), 2800);
     }, 500);
-    setTimeout(() => { gate.hidden = true; body.classList.remove('locked'); }, 1700);
+    setTimeout(() => { gate.hidden = true; body.classList.remove('locked'); Trail.reset(); }, 1700);
   };
   $('#gate-open').addEventListener('click', go);
   addEventListener('keydown', e => { if (!gate.hidden && (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape')) go(); });
-  $('#gate-open').focus({ preventScroll: true });
+
+  // "Open the invitation again"
+  $('#replay').addEventListener('click', () => {
+    Music.pause();
+    const root = document.documentElement;
+    root.style.scrollBehavior = 'auto';
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    requestAnimationFrame(() => requestAnimationFrame(() => { root.style.scrollBehavior = ''; }));
+    show();
+  });
+
+  show();
 }
+
+/* ======================================================
+   Tiger trail — one winding line of pugmarks down the page,
+   revealed step by step as you scroll
+   ====================================================== */
+const Trail = (() => {
+  const svg = $('#tiger-trail'), main = $('main');
+  let prints = [], shown = 0, raf;
+  function build() {
+    const Wd = main.clientWidth, Ht = main.scrollHeight;
+    svg.setAttribute('viewBox', `0 0 ${Wd} ${Ht}`);
+    const cx = Wd / 2, amp = Math.min(Wd * .38, 300), period = Math.max(900, Ht / 7);
+    const X = y => cx + amp * Math.sin(2 * Math.PI * y / period + .6) * (0.85 + .15 * Math.sin(y / 370));
+    const STRIDE = 46, SIZE = Wd < 600 ? 19 : 22;
+    let html = '', acc = 0, side = 1, px = X(0), py = 0;
+    for (let y = 2; y < Ht - 40; y += 2) {
+      const x = X(y), dx = x - px, dy = y - py, d = Math.hypot(dx, dy);
+      acc += d; px = x; py = y;
+      if (acc < STRIDE) continue;
+      acc = 0; side = -side;
+      const ux = dx / d, uy = dy / d, ox = -uy * 9 * side, oy = ux * 9 * side;   // alternate left / right foot
+      const ang = 180 - Math.atan2(ux, uy) * 180 / Math.PI + side * 6;
+      html += `<use href="#paw" width="${SIZE}" height="${SIZE}" data-y="${Math.round(y)}" ` +
+              `transform="translate(${(x + ox - SIZE / 2).toFixed(1)} ${(y + oy - SIZE / 2).toFixed(1)}) rotate(${ang.toFixed(1)} ${SIZE / 2} ${SIZE / 2})"/>`;
+    }
+    svg.innerHTML = html;
+    prints = [...svg.children]; shown = 0;
+    update();
+  }
+  function update() {
+    if (!prints.length) return;
+    const top = main.getBoundingClientRect().top + scrollY;
+    const edge = scrollY + innerHeight * .78 - top;          // reveal up to just below the middle of the screen
+    while (shown < prints.length && +prints[shown].dataset.y < edge) prints[shown++].classList.add('on');
+  }
+  function reset() { prints.forEach(p => p.classList.remove('on')); shown = 0; update(); }
+  function init() {
+    build();
+    addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(update); }, { passive: true });
+    let t;
+    const rebuild = () => { clearTimeout(t); t = setTimeout(build, 250); };
+    if ('ResizeObserver' in window) new ResizeObserver(rebuild).observe(main); else addEventListener('resize', rebuild);
+  }
+  return { init, reset };
+})();
 
 /* ======================================================
    Boot
@@ -574,7 +667,7 @@ buildToran();
 let lastW = innerWidth;
 addEventListener('resize', () => { if (Math.abs(innerWidth - lastW) > 40) { lastW = innerWidth; buildToran(); } });
 renderDays();
-DaySwitch.init();
+DayNav.init();
 Mood.init();
 initScroll();
 startCountdown();
@@ -582,4 +675,4 @@ initCalendar();
 initRsvp();
 updateLive(); setInterval(updateLive, 60000);
 initGate();
-if (document.fonts) document.fonts.ready.then(() => DaySwitch.sizeTrack());
+Trail.init();
