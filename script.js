@@ -22,6 +22,21 @@ const CONFIG = {
   }
 };
 
+/* If the page was cached before the RSVP URL was set, fetch the latest config.js before giving up. */
+async function rsvpEndpoint() {
+  if (CONFIG.rsvpEndpoint) return CONFIG.rsvpEndpoint;
+  try {
+    const base = document.querySelector('script[src*="config.js"]')?.src.split('?')[0];
+    if (base) {
+      const txt = await (await fetch(base + '?t=' + Date.now(), { cache: 'no-store' })).text();
+      const m = txt.match(/RSVP_ENDPOINT\s*=\s*['"]([^'"]+)['"]/);
+      if (m) CONFIG.rsvpEndpoint = window.RSVP_ENDPOINT = m[1];
+    }
+  } catch (e) { console.warn('Could not refresh config.js', e); }
+  return CONFIG.rsvpEndpoint;
+}
+
+
 document.documentElement.classList.add('js');
 
 /* ---------- Floating nav: show after the first screen ---------- */
@@ -134,7 +149,7 @@ document.documentElement.classList.add('js');
       return;
     }
 
-    if (!CONFIG.rsvpEndpoint) {
+    if (!(await rsvpEndpoint())) {
       setStatus('RSVPs aren’t switched on yet — please reply to the family on WhatsApp for now.', 'err');
       console.warn('Set RSVP_ENDPOINT in config.js (see README.md).');
       return;
