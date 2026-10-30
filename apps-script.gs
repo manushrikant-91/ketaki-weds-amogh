@@ -1,4 +1,9 @@
 /**
+ * @OnlyCurrentDoc
+ * (Limits this script to this one spreadsheet — it cannot open any other file in your Google account.)
+ */
+
+/**
  * RSVP backend for the Ketaki & Amogh website.
  *  - Guests' RSVPs are added to this sheet (doPost).
  *  - The private status page reads them back (doGet ?action=list), but only with the passcode.
