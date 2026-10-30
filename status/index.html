@@ -209,7 +209,7 @@
         $('updated').textContent = 'Updated ' + new Date(data.updated || Date.now()).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
       } catch (err) {
         console.error(err);
-        if (!quiet) { show(rows.length ? 'dash' : 'setup'); if (!rows.length) $('setup-msg').textContent = 'Couldn’t reach the RSVP sheet. Check your connection and refresh.'; }
+        if (!quiet) { show(rows.length ? 'dash' : 'setup'); if (!rows.length) $('setup-msg').textContent = 'Couldn’t reach the RSVP sheet. If this keeps happening, check the Apps Script deployment: Who has access must be “Anyone” (not “Anyone with Google account”). See README.'; }
         $('updated').textContent = 'Couldn’t refresh just now — showing the last results.';
       } finally { btn.classList.remove('spin'); }
     }
