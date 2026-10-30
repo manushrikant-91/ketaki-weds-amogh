@@ -699,7 +699,8 @@ const Trail = (() => {
     if (!prints.length) return;
     const top = main.getBoundingClientRect().top + scrollY;
     const edge = scrollY + innerHeight * .78 - top;          // reveal up to just below the middle of the screen
-    while (shown < prints.length && +prints[shown].dataset.y < edge) prints[shown++].classList.add('on');
+    while (shown < prints.length && +prints[shown].dataset.y < edge) prints[shown++].classList.add('on');      // walking forward
+    while (shown > 0 && +prints[shown - 1].dataset.y >= edge) prints[--shown].classList.remove('on');          // scrolling back: steps fade away
   }
   function reset() { prints.forEach(p => p.classList.remove('on')); shown = 0; update(); }
   function init() {
