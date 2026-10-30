@@ -611,16 +611,28 @@ function initScroll() {
    Opening gate
    ====================================================== */
 function initGate() {
-  const gate = $('#gate'), body = document.body;
+  const gate = $('#gate'), body = document.body, root = document.documentElement;
   let opening = false;
+
+  // Always start from the top: no remembered scroll position, no jump to a #section
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  const toTop = () => {
+    root.style.scrollBehavior = 'auto';
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    requestAnimationFrame(() => requestAnimationFrame(() => { root.style.scrollBehavior = ''; }));
+  };
+
   const show = () => {
     opening = false;
+    toTop();
     gate.classList.remove('opening'); gate.hidden = false;
-    body.classList.remove('open'); body.classList.add('locked');
+    body.classList.remove('open', 'scrolled'); body.classList.add('locked');
     $('#gate-open').focus({ preventScroll: true });
   };
   const go = async () => {
     if (opening) return; opening = true;
+    toTop();
     Bell.ensure();
     Bell.chime(880); Bell.chime(1175, .22); Bell.chime(1568, .44, .07);
     gate.classList.add('opening');
@@ -631,20 +643,18 @@ function initGate() {
       $$('#toran .bell').forEach((b, i) => setTimeout(() => b.classList.add('ring'), i * 110));
       setTimeout(() => $$('#toran .bell').forEach(b => b.classList.remove('ring')), 2800);
     }, 500);
-    setTimeout(() => { gate.hidden = true; body.classList.remove('locked'); Trail.reset(); }, 1700);
+    setTimeout(() => { gate.hidden = true; body.classList.remove('locked'); toTop(); Trail.reset(); }, 1700);
   };
   $('#gate-open').addEventListener('click', go);
   addEventListener('keydown', e => { if (!gate.hidden && (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape')) go(); });
 
   // "Open the invitation again"
-  $('#replay').addEventListener('click', () => {
-    Music.pause();
-    const root = document.documentElement;
-    root.style.scrollBehavior = 'auto';
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    requestAnimationFrame(() => requestAnimationFrame(() => { root.style.scrollBehavior = ''; }));
-    show();
-  });
+  $('#replay').addEventListener('click', () => { Music.pause(); show(); });
+
+  // Coming back with the Back button / reopening a cached tab: start over at the seal
+  addEventListener('pageshow', e => { if (e.persisted) { Music.pause(); show(); } });
+  // Some browsers restore scroll after load — reset once more when everything has loaded
+  addEventListener('load', () => { if (!gate.hidden) toTop(); });
 
   show();
 }
