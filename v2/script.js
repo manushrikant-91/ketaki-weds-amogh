@@ -4,7 +4,7 @@
 
 const CONFIG = {
   // Paste the Google Apps Script web-app URL here (same one as the main site).
-  rsvpEndpoint: '',
+  rsvpEndpoint: window.RSVP_ENDPOINT || '',   // set in /config.js
   muhurat: '2026-12-12T12:07:00+05:30',
   location: 'Olive Resort, Turia Gate, Pench, Madhya Pradesh 480881'
 };
@@ -401,7 +401,7 @@ function initRsvp() {
     }
     if (!CONFIG.rsvpEndpoint) {
       setStatus('RSVPs aren’t switched on yet — please reply to the family on WhatsApp for now.', 'err');
-      console.warn('Set CONFIG.rsvpEndpoint in v2/script.js'); return;
+      console.warn('Set RSVP_ENDPOINT in config.js (see README.md).'); return;
     }
     const isYes = attending === 'Yes';
     const payload = new URLSearchParams({

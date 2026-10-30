@@ -4,7 +4,7 @@
 
 const CONFIG = {
   // Paste your Google Apps Script web-app URL here (ends in /exec). See README.md.
-  rsvpEndpoint: '',
+  rsvpEndpoint: window.RSVP_ENDPOINT || '',   // set in /config.js
 
   // Muhurat: Saturday 12 Dec 2026, 12:07 PM India time
   muhurat: '2026-12-12T12:07:00+05:30',
@@ -136,7 +136,7 @@ document.documentElement.classList.add('js');
 
     if (!CONFIG.rsvpEndpoint) {
       setStatus('RSVPs aren’t switched on yet — please reply to the family on WhatsApp for now.', 'err');
-      console.warn('Set CONFIG.rsvpEndpoint in script.js (see README.md).');
+      console.warn('Set RSVP_ENDPOINT in config.js (see README.md).');
       return;
     }
 

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>RSVP Status · Ketaki &amp; Amogh</title>
+  <meta name="theme-color" content="#0B2116">
+  <link rel="icon" href="../assets/icon-ganesha.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/icon-ganesha-32.png">
+  <link rel="apple-touch-icon" href="../assets/icon-ganesha-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --forest: #0B2116; --forest-2: #1D4A31; --leaf: #2F6B43;
+      --cream: #F8EFDD; --paper: #FFFBF3; --line: #E3D3AE;
+      --gold: #C9A24D; --gold-dark: #8A6420; --gold-light: #E8CF8E;
+      --red: #A3262B; --ink: #2B2416; --muted: #7A6648;
+      --caps: 'Cinzel', Georgia, serif; --serif: 'Cormorant Garamond', Georgia, serif; --script: 'Pinyon Script', cursive;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--ink); font-family: var(--serif); font-weight: 500; font-size: 17px; line-height: 1.45;
+      background: #0B2116;
+      -webkit-font-smoothing: antialiased;
+    }
+    body::before { content: ""; position: fixed; inset: 0; z-index: -1;
+      background: linear-gradient(rgba(8, 26, 16, .86), rgba(8, 26, 16, .94)), url("../assets/jungle.jpg") center / cover no-repeat; }
+    .wrap { width: min(880px, 100% - 28px); margin: 0 auto; padding: calc(env(safe-area-inset-top) + 22px) 0 60px; }
+    header { display: flex; align-items: center; gap: 14px; color: var(--cream); margin-bottom: 18px; }
+    .ganesha { width: 34px; height: 48px; flex: none;
+      background: linear-gradient(160deg, #FFF0C2, var(--gold) 55%, #A57A2C);
+      -webkit-mask: url("../assets/ganesha.webp") center / contain no-repeat; mask: url("../assets/ganesha.webp") center / contain no-repeat; }
+    h1 { margin: 0; font-family: var(--script); font-weight: normal; font-size: clamp(32px, 8vw, 44px); line-height: 1.05; color: var(--gold-light); }
+    .sub { font-family: var(--caps); font-size: 10.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--gold); }
+    header .grow { flex: 1; min-width: 0; }
+    .icon-btn { flex: none; display: inline-flex; align-items: center; gap: 6px; padding: 9px 12px; border-radius: 12px; cursor: pointer;
+      background: rgba(232, 207, 142, .1); border: 1px solid rgba(201, 162, 77, .5); color: var(--gold-light);
+      font-family: var(--caps); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; }
+    .icon-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .icon-btn.spin svg { animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .updated { color: var(--cream); opacity: .7; font-style: italic; font-size: 15px; margin: -6px 0 16px; }
+
+    .panel { background: var(--paper); border: 1px solid var(--gold); border-radius: 18px; padding: 18px; box-shadow: 0 18px 40px rgba(0,0,0,.35); }
+    .kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+    .kpi { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 14px 14px 12px; }
+    .kpi.hero { grid-column: 1 / -1; background: linear-gradient(135deg, var(--forest-2), var(--forest)); border-color: var(--gold); color: var(--cream); display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+    .kpi b { display: block; font-family: var(--caps); font-weight: 400; font-size: 32px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+    .kpi.hero b { font-size: 46px; color: #FFF3D2; }
+    .kpi span { font-family: var(--caps); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+    .kpi.hero span { color: var(--gold-light); }
+    .kpi.hero small { font-style: italic; opacity: .85; font-size: 15px; }
+    @media (min-width: 640px) { .kpis { grid-template-columns: repeat(4, 1fr); } }
+
+    h2 { font-family: var(--caps); font-weight: 600; font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: var(--gold-dark); margin: 0 0 12px; }
+    .days { display: grid; gap: 10px; margin-bottom: 14px; }
+    .day { display: grid; grid-template-columns: 112px 1fr 40px; align-items: center; gap: 10px; }
+    .day .lbl { font-weight: 600; line-height: 1.15; }
+    .day .lbl small { display: block; font-weight: 500; font-style: italic; color: var(--muted); font-size: 14px; }
+    .bar { height: 14px; border-radius: 99px; background: #F0E6D0; overflow: hidden; }
+    .bar i { display: block; height: 100%; border-radius: 99px; width: 0; transition: width .8s cubic-bezier(.22,.8,.24,1); }
+    .day[data-d="11"] .bar i { background: linear-gradient(90deg, #E7A021, #F2C14E); }
+    .day[data-d="12"] .bar i { background: linear-gradient(90deg, var(--red), #C4483A); }
+    .day[data-d="13"] .bar i { background: linear-gradient(90deg, #5E8C70, #E7B98B); }
+    .day .num { font-family: var(--caps); font-size: 18px; text-align: right; font-variant-numeric: tabular-nums; }
+
+    .tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 18px 0 12px; }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .chip { border: 1px solid var(--line); background: #fff; border-radius: 99px; padding: 6px 12px; font: inherit; font-size: 15px; cursor: pointer; color: var(--ink); }
+    .chip[aria-pressed="true"] { background: var(--forest-2); border-color: var(--forest-2); color: var(--gold-light); }
+    .chip .c { opacity: .7; margin-left: 4px; font-size: 13px; }
+    .search { flex: 1 1 180px; min-width: 0; font: inherit; font-size: 16px; padding: 8px 12px; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+    .search:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,162,77,.25); }
+
+    .list { display: grid; gap: 10px; }
+    .card { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: #fff; }
+    .row1 { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .row1 .name { font-weight: 700; font-size: 19px; }
+    .badge { font-family: var(--caps); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; padding: 2px 8px; border-radius: 99px; }
+    .badge.yes { background: rgba(47,107,67,.14); color: var(--leaf); }
+    .badge.no { background: rgba(163,38,43,.12); color: var(--red); }
+    .badge.pick { background: rgba(201,162,77,.2); color: var(--gold-dark); }
+    .row1 .when { margin-left: auto; font-size: 14px; color: var(--muted); font-style: italic; }
+    .meta { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 4px; font-size: 15.5px; color: #4a3d28; }
+    .meta a { color: var(--forest-2); text-decoration: none; border-bottom: 1px dotted var(--forest-2); }
+    .note { margin: 8px 0 0; padding: 8px 10px; border-left: 3px solid var(--gold-light); background: #FBF5E8; font-style: italic; border-radius: 0 8px 8px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .empty { text-align: center; color: var(--muted); font-style: italic; padding: 22px 0; }
+
+    .gate { max-width: 420px; margin: 12vh auto 0; text-align: center; }
+    .gate p { color: var(--muted); }
+    .gate input { width: 100%; font: inherit; font-size: 18px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); margin: 6px 0 12px; text-align: center; }
+    .btn { display: inline-flex; justify-content: center; width: 100%; padding: 13px 18px; border-radius: 12px; border: 1px solid var(--gold); cursor: pointer;
+      background: var(--forest-2); color: var(--gold-light); font-family: var(--caps); font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
+    .err { color: var(--red); min-height: 1.4em; margin: 10px 0 0; }
+    .foot { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .link { background: none; border: 0; color: var(--gold-light); font: inherit; font-style: italic; text-decoration: underline; cursor: pointer; opacity: .85; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="ganesha" aria-hidden="true"></span>
+      <div class="grow">
+        <div class="sub">RSVP status</div>
+        <h1>Ketaki &amp; Amogh</h1>
+      </div>
+      <button class="icon-btn" id="refresh" type="button" hidden>
+        <svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>Refresh
+      </button>
+    </header>
+
+    <!-- passcode -->
+    <div class="panel gate" id="gate" hidden>
+      <h2>Family only</h2>
+      <p>Enter the passcode to see who’s coming.</p>
+      <form id="gate-form">
+        <input id="pass" type="password" autocomplete="current-password" placeholder="Passcode" required>
+        <button class="btn" type="submit">Show RSVPs</button>
+      </form>
+      <p class="err" id="gate-err" role="alert"></p>
+    </div>
+
+    <!-- dashboard -->
+    <div id="dash" hidden>
+      <p class="updated" id="updated"></p>
+
+      <div class="kpis">
+        <div class="kpi hero"><b id="k-guests">0</b><span>guests coming</span><small id="k-hh"></small></div>
+        <div class="kpi"><b id="k-resp">0</b><span>Responses</span></div>
+        <div class="kpi"><b id="k-yes">0</b><span>Coming</span></div>
+        <div class="kpi"><b id="k-no">0</b><span>Not coming</span></div>
+        <div class="kpi"><b id="k-pick">0</b><span>Need pickup</span></div>
+      </div>
+
+      <div class="panel">
+        <h2>Headcount by day</h2>
+        <div class="days" id="days"></div>
+
+        <div class="tools">
+          <div class="chips" role="group" aria-label="Filter">
+            <button class="chip" type="button" data-f="all" aria-pressed="true">All<span class="c" id="c-all"></span></button>
+            <button class="chip" type="button" data-f="yes" aria-pressed="false">Coming<span class="c" id="c-yes"></span></button>
+            <button class="chip" type="button" data-f="no" aria-pressed="false">Not coming<span class="c" id="c-no"></span></button>
+            <button class="chip" type="button" data-f="pick" aria-pressed="false">Pickup<span class="c" id="c-pick"></span></button>
+          </div>
+          <input class="search" id="q" type="search" placeholder="Search names or notes" aria-label="Search">
+        </div>
+        <div class="list" id="list"></div>
+      </div>
+
+      <div class="foot">
+        <button class="icon-btn" id="csv" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Download CSV
+        </button>
+        <button class="link" id="forget" type="button">Forget passcode on this device</button>
+      </div>
+    </div>
+
+    <div class="panel gate" id="setup" hidden>
+      <h2>Almost there</h2>
+      <p id="setup-msg"></p>
+    </div>
+  </div>
+
+  <script src="../config.js?v=1"></script>
+  <script>
+  (() => {
+    const ENDPOINT = window.RSVP_ENDPOINT || '';
+    const DAYS = [['11', '11 Dec', 'Haldi & Sangeet'], ['12', '12 Dec', 'The Big Day'], ['13', '13 Dec', 'Vidai']];
+    const $ = id => document.getElementById(id);
+    const store = {
+      get() { try { return localStorage.getItem('ka-status-key') || ''; } catch { return ''; } },
+      set(v) { try { localStorage.setItem('ka-status-key', v); } catch {} },
+      clear() { try { localStorage.removeItem('ka-status-key'); } catch {} }
+    };
+    let key = '', rows = [], filter = 'all', timer;
+
+    // The passcode can arrive in the link (…/status/#key=PASSCODE). The part after # never reaches GitHub.
+    const fromLink = new URLSearchParams(location.hash.slice(1)).get('key');
+    if (fromLink) { store.set(fromLink); history.replaceState(null, '', location.pathname); }
+    key = fromLink || store.get();
+
+    const show = id => ['gate', 'dash', 'setup'].forEach(x => $(x).hidden = x !== id);
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    function setup(msg) { show('setup'); $('setup-msg').textContent = msg; }
+
+    async function load(quiet) {
+      if (!ENDPOINT) return setup('RSVPs aren’t connected yet. Paste the Google Apps Script URL into config.js (see README).');
+      if (!key) { show('gate'); $('pass').focus(); return; }
+      const btn = $('refresh'); btn.classList.add('spin');
+      try {
+        const res = await fetch(ENDPOINT + '?action=list&key=' + encodeURIComponent(key), { cache: 'no-store' });
+        const data = await res.json();
+        if (!data.ok) {
+          if (data.error === 'unauthorized') { store.clear(); key = ''; show('gate'); $('gate-err').textContent = 'That passcode didn’t work. Please try again.'; return; }
+          if (data.error === 'not-configured') return setup('The status passcode isn’t set yet. Add a STATUS_KEY script property in Apps Script (see README).');
+          throw new Error(data.error || 'Unknown error');
+        }
+        store.set(key);
+        rows = data.rows.slice().sort((a, b) => (b.at > a.at ? 1 : -1));
+        show('dash'); $('refresh').hidden = false;
+        render();
+        $('updated').textContent = 'Updated ' + new Date(data.updated || Date.now()).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      } catch (err) {
+        console.error(err);
+        if (!quiet) { show(rows.length ? 'dash' : 'setup'); if (!rows.length) $('setup-msg').textContent = 'Couldn’t reach the RSVP sheet. Check your connection and refresh.'; }
+        $('updated').textContent = 'Couldn’t refresh just now — showing the last results.';
+      } finally { btn.classList.remove('spin'); }
+    }
+
+    const isYes = r => /^y/i.test(r.attending);
+    const needsPick = r => isYes(r) && /^y/i.test(r.pickup);
+    const goesOn = (r, d) => isYes(r) && (r.days || '').includes(d + ' Dec');
+
+    function render() {
+      const yes = rows.filter(isYes), no = rows.filter(r => !isYes(r));
+      const guests = yes.reduce((s, r) => s + (r.guests || 0), 0);
+      const pickGuests = rows.filter(needsPick).reduce((s, r) => s + (r.guests || 0), 0);
+      $('k-guests').textContent = guests;
+      $('k-hh').textContent = yes.length ? `from ${yes.length} RSVP${yes.length > 1 ? 's' : ''}` : '';
+      $('k-resp').textContent = rows.length; $('k-yes').textContent = yes.length; $('k-no').textContent = no.length; $('k-pick').textContent = pickGuests;
+      $('c-all').textContent = rows.length; $('c-yes').textContent = yes.length; $('c-no').textContent = no.length; $('c-pick').textContent = rows.filter(needsPick).length;
+
+      const perDay = DAYS.map(([d]) => rows.filter(r => goesOn(r, d)).reduce((s, r) => s + (r.guests || 0), 0));
+      const max = Math.max(1, ...perDay);
+      $('days').innerHTML = DAYS.map(([d, lbl, sub], i) =>
+        `<div class="day" data-d="${d}"><div class="lbl">${lbl}<small>${esc(sub)}</small></div><div class="bar"><i style="width:0"></i></div><div class="num">${perDay[i]}</div></div>`).join('');
+      requestAnimationFrame(() => [...$('days').querySelectorAll('.bar i')].forEach((el, i) => el.style.width = (perDay[i] / max * 100) + '%'));
+
+      const q = $('q').value.trim().toLowerCase();
+      const list = rows.filter(r =>
+        (filter === 'all' || (filter === 'yes' && isYes(r)) || (filter === 'no' && !isYes(r)) || (filter === 'pick' && needsPick(r))) &&
+        (!q || (r.name + ' ' + r.message + ' ' + r.phone).toLowerCase().includes(q)));
+
+      $('list').innerHTML = list.length ? list.map(r => {
+        const digits = (r.phone || '').replace(/\D/g, '');
+        const phone = r.phone ? `<span>☎ <a href="tel:${esc(r.phone.replace(/[^\d+]/g, ''))}">${esc(r.phone)}</a>${(/^\s*(\+|00)/.test(r.phone) || digits.length >= 11) ? ` · <a href="https://wa.me/${digits.replace(/^00/, '')}" target="_blank" rel="noopener">WhatsApp</a>` : ''}</span>` : '';
+        return `<article class="card">
+          <div class="row1"><span class="name">${esc(r.name)}</span>
+            <span class="badge ${isYes(r) ? 'yes' : 'no'}">${isYes(r) ? 'Coming' : 'Not coming'}</span>
+            ${needsPick(r) ? '<span class="badge pick">Pickup</span>' : ''}
+            <span class="when">${esc(ago(r.at))}</span></div>
+          <div class="meta">
+            ${isYes(r) ? `<span>${r.guests} guest${r.guests === 1 ? '' : 's'}</span><span>${esc(r.days || '—')}</span>` : ''}
+            ${phone}
+          </div>
+          ${r.message ? `<p class="note">${esc(r.message)}</p>` : ''}
+        </article>`;
+      }).join('') : `<p class="empty">${rows.length ? 'No RSVPs match.' : 'No RSVPs yet — they’ll appear here as guests reply.'}</p>`;
+    }
+
+    function ago(iso) {
+      const t = Date.parse(iso); if (isNaN(t)) return '';
+      const m = Math.round((Date.now() - t) / 6e4);
+      if (m < 1) return 'just now'; if (m < 60) return m + ' min ago';
+      const h = Math.round(m / 60); if (h < 24) return h + ' h ago';
+      return new Date(t).toLocaleDateString([], { day: 'numeric', month: 'short' });
+    }
+
+    function csv() {
+      const cols = ['at', 'name', 'phone', 'attending', 'guests', 'days', 'pickup', 'message'];
+      const head = ['Submitted at', 'Name', 'Phone', 'Attending', 'Guests', 'Days', 'Needs pickup', 'Message'];
+      const cell = v => { v = String(v ?? ''); if (/^[=+\-@]/.test(v)) v = "'" + v; return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+      const text = [head, ...rows.map(r => cols.map(c => r[c]))].map(r => r.map(cell).join(',')).join('\r\n');
+      const url = URL.createObjectURL(new Blob(['﻿' + text], { type: 'text/csv;charset=utf-8' }));
+      const a = Object.assign(document.createElement('a'), { href: url, download: 'Ketaki-Amogh-RSVPs.csv' });
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }
+
+    $('gate-form').addEventListener('submit', e => { e.preventDefault(); key = $('pass').value.trim(); $('gate-err').textContent = ''; load(); });
+    $('refresh').addEventListener('click', () => load());
+    $('csv').addEventListener('click', csv);
+    $('forget').addEventListener('click', () => { store.clear(); key = ''; rows = []; $('refresh').hidden = true; show('gate'); });
+    $('q').addEventListener('input', render);
+    document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+      filter = c.dataset.f; document.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', String(x === c))); render();
+    }));
+    // keep it fresh while the page is open
+    timer = setInterval(() => { if (!document.hidden && key && !$('dash').hidden) load(true); }, 60000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && key && !$('dash').hidden) load(true); });
+
+    load();
+  })();
+  </script>
+</body>
+</html>
