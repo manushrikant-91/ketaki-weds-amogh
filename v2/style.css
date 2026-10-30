@@ -270,7 +270,7 @@ body.open:not(.scrolled) .live { bottom: calc(env(safe-area-inset-bottom) + 16px
 .day-bar b { font-family: var(--caps); font-style: normal; font-weight: 400; font-size: 22px; color: var(--cream); line-height: 1.15; transition: color .35s ease; }
 .day-bar a[aria-current="true"] { background: linear-gradient(180deg, #F3DFA6, var(--gold)); color: var(--forest); }
 .day-bar a[aria-current="true"] b { color: var(--forest); }
-.days-list { display: flex; flex-direction: column; gap: 26px; }
+.days-list { display: flex; flex-direction: column; gap: 120px; }
 .day-card {
   position: relative; overflow: hidden; border-radius: 22px; color: var(--ink); scroll-margin-top: 92px;
   background: radial-gradient(ellipse at 50% 0%, var(--cream-hi), var(--cream) 60%, #F1E3C6);
