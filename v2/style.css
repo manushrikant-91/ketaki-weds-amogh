@@ -329,14 +329,14 @@ body.open:not(.scrolled) .live { bottom: calc(env(safe-area-inset-bottom) + 16px
 .j-ico svg, .gtk-card svg { width: 20px; height: 20px; fill: none; stroke: var(--gold-light); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .journey b { display: block; font-size: 18px; font-weight: 600; }
 .journey span { font-size: 15.5px; opacity: .8; }
-.gtk-title { font-family: var(--caps); font-weight: 600; font-size: 13px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); text-align: center; margin: 30px 0 14px; }
+.gtk-title { font-family: var(--caps); font-weight: 600; font-size: 13px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); text-align: center; margin: 120px 0 14px; }
 .gtk { display: grid; grid-auto-flow: column; grid-auto-columns: 72%; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; scrollbar-width: none; }
 .gtk::-webkit-scrollbar { display: none; }
-.gtk-card { scroll-snap-align: start; padding: 16px; border-radius: 18px; background: rgba(248,239,221,.94); color: var(--ink); border: 1px solid var(--gold); }
+.gtk-card { scroll-snap-align: start; padding: 16px; border-radius: 18px; background: #F5ECD9; color: var(--ink); border: 1px solid var(--gold); }
 .gtk-card svg { stroke: var(--gold-dark); width: 24px; height: 24px; }
 .gtk-card b { display: block; font-size: 18px; margin: 6px 0 2px; }
 .gtk-card span { font-size: 15.5px; color: var(--brown); line-height: 1.4; }
-@media (min-width: 600px) { .gtk { grid-auto-flow: row; grid-template-columns: 1fr 1fr; overflow: visible; } }
+@media (min-width: 600px) { .gtk { grid-auto-flow: row; grid-template-columns: 1fr 1fr; gap: 56px 40px; overflow: visible; } }
 
 /* ---------- RSVP paper ---------- */
 .paper {

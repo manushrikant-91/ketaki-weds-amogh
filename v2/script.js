@@ -672,6 +672,13 @@ const Trail = (() => {
     const cx = Wd / 2, amp = Math.min(Wd * .38, 300), period = Math.max(900, Ht / 7);
     const X = y => cx + amp * Math.sin(2 * Math.PI * y / period + .6) * (0.85 + .15 * Math.sin(y / 370));
     const STRIDE = 46, SIZE = Wd < 600 ? 19 : 22;
+    // the tiger steps around headings and loose text instead of over them
+    const m = main.getBoundingClientRect(), PAD = 18;
+    const avoid = $$('.eyebrow, .section-title, .gtk-title, .venue-sub, .fine, .thanks > *:not(.replay)').map(el => {
+      const r = el.getBoundingClientRect();
+      return [r.left - m.left - PAD, r.top - m.top - PAD - 30, r.right - m.left + PAD, r.bottom - m.top + PAD + 30];
+    });
+    const blocked = (x, y) => avoid.some(([l, t, r, b]) => x > l && x < r && y > t && y < b);
     let html = '', acc = 0, side = 1, px = X(0), py = 0;
     for (let y = 2; y < Ht - 40; y += 2) {
       const x = X(y), dx = x - px, dy = y - py, d = Math.hypot(dx, dy);
@@ -680,6 +687,7 @@ const Trail = (() => {
       acc = 0; side = -side;
       const ux = dx / d, uy = dy / d, ox = -uy * 9 * side, oy = ux * 9 * side;   // alternate left / right foot
       const ang = 180 - Math.atan2(ux, uy) * 180 / Math.PI + side * 6;
+      if (blocked(x + ox, y + oy)) continue;
       html += `<use href="#paw" width="${SIZE}" height="${SIZE}" data-y="${Math.round(y)}" ` +
               `transform="translate(${(x + ox - SIZE / 2).toFixed(1)} ${(y + oy - SIZE / 2).toFixed(1)}) rotate(${ang.toFixed(1)} ${SIZE / 2} ${SIZE / 2})"/>`;
     }
