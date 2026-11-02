@@ -48,7 +48,7 @@ a { color: inherit; }
   position: fixed; inset: 0; z-index: 0;
   background:
     radial-gradient(ellipse at 50% 30%, rgba(15, 43, 28, .25), rgba(8, 24, 15, .78) 75%),
-    url("assets/jungle.jpg") center / cover no-repeat;
+    url("../assets/jungle.jpg") center / cover no-repeat;
 }
 #fireflies { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
 main { position: relative; z-index: 2; }

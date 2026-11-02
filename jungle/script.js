@@ -1,6 +1,10 @@
 /* ==========================================================
-   Ketaki & Amogh — v2 "Into the Jungle"
+   Ketaki & Amogh — "Into the Jungle" invitation
+   Shared by the full invite (/) and the wedding-day invite (/wedding/).
+   A page opts into wedding-day-only mode with <body data-invite="wedding">.
    ========================================================== */
+
+const WEDDING_ONLY = document.body.dataset.invite === 'wedding';
 
 const CONFIG = {
   // Paste the Google Apps Script web-app URL here (same one as the main site).
@@ -25,7 +29,7 @@ async function rsvpEndpoint() {
 
 
 /* The whole schedule lives here; the day cards are drawn from it. Times are IST. */
-const DAYS = [
+const ALL_DAYS = [
   {
     date: '2026-12-11', weekday: 'Friday', title: 'Haldi & Sangeet', theme: 'haldi', icon: 'marigold',
     tagline: 'Flowers, turmeric and an evening of music',
@@ -68,6 +72,7 @@ const DAYS = [
     ]
   }
 ];
+const DAYS = WEDDING_ONLY ? [ALL_DAYS[1]] : ALL_DAYS;
 
 const ICONS = {
   marigold: '<svg viewBox="0 0 60 60" class="day-icon" aria-hidden="true">' +
@@ -305,7 +310,7 @@ const Mood = {
    ====================================================== */
 function updateLive() {
   const now = NOW();
-  const start = ist(DAYS[0].date, '00:00'), end = ist(DAYS[2].date, '23:59');
+  const start = ist(DAYS[0].date, '00:00'), end = ist(DAYS[DAYS.length - 1].date, '23:59');
   const banner = $('#live');
   $$('.tl li').forEach(li => { li.classList.remove('now', 'next', 'past'); const c = $('.chip', li); c.hidden = true; });
   if (now < start || now > end) { banner.hidden = true; return; }
@@ -328,7 +333,8 @@ function updateLive() {
   banner.hidden = false;
   $('#live-text').textContent = nowLi
     ? `Happening now: ${name(nowLi)}` + (nextLi ? ` · Next: ${name(nextLi)} at ${time(nextLi)}` : '')
-    : nextLi ? `Coming up at ${time(nextLi)}: ${name(nextLi)}` : `That’s a wrap for ${DAYS[di].title.toLowerCase()} — see you tomorrow!`;
+    : nextLi ? `Coming up at ${time(nextLi)}: ${name(nextLi)}`
+    : di < DAYS.length - 1 ? `That’s a wrap for ${DAYS[di].title.toLowerCase()} — see you tomorrow!` : 'That’s a wrap — thank you for celebrating with us!';
   banner.onclick = () => (nowLi || nextLi || card).scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'center' });
   banner.style.cursor = 'pointer';
 }
@@ -359,10 +365,16 @@ function startCountdown() {
    ====================================================== */
 function initCalendar() {
   const dlg = $('#cal-dialog');
-  const details = '11 Dec – Haldi & Sangeet\n12 Dec – Wedding (muhurat 12:07 PM IST)\n13 Dec – Vidai & check-out by 11:30 AM\n\n' + location.href.split(/[?#]/)[0];
+  const page = location.href.split(/[?#]/)[0];
+  const details = (WEDDING_ONLY
+    ? 'Wedding of Ketaki & Amogh\nMuhurat at 12:07 PM IST\n\n'
+    : '11 Dec – Haldi & Sangeet\n12 Dec – Wedding (muhurat 12:07 PM IST)\n13 Dec – Vidai & check-out by 11:30 AM\n\n') + page;
+  const ALL = WEDDING_ONLY
+    ? { title: 'Ketaki & Amogh — Wedding', start: '20261212', end: '20261213' }
+    : { title: 'Ketaki & Amogh — Wedding Celebrations', start: '20261211', end: '20261214' };
   const g = (text, dates, det) => 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(text) +
     '&dates=' + dates + '&ctz=Asia/Kolkata&location=' + encodeURIComponent(CONFIG.location) + '&details=' + encodeURIComponent(det);
-  $('#cal-google-all').href = g('Ketaki & Amogh — Wedding Celebrations', '20261211/20261214', details);
+  $('#cal-google-all').href = g(ALL.title, ALL.start + '/' + ALL.end, details);
   $('#cal-google-muhurat').href = g('Ketaki & Amogh — Wedding Muhurat', '20261212T063700Z/20261212T073000Z', 'The wedding muhurat at 12:07 PM IST.\n\n' + details);
   $$('[data-open-cal]').forEach(b => b.addEventListener('click', () => dlg.showModal ? dlg.showModal() : window.open($('#cal-google-all').href)));
   $('#cal-ics').addEventListener('click', () => {
@@ -370,8 +382,8 @@ function initCalendar() {
     const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
     const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Ketaki & Amogh//Wedding//EN', 'CALSCALE:GREGORIAN',
       'BEGIN:VEVENT', 'UID:ketaki-amogh-wedding-2026@invite', 'DTSTAMP:' + stamp,
-      'DTSTART;VALUE=DATE:20261211', 'DTEND;VALUE=DATE:20261214',
-      'SUMMARY:' + esc('Ketaki & Amogh — Wedding Celebrations'), 'LOCATION:' + esc(CONFIG.location), 'DESCRIPTION:' + esc(details),
+      'DTSTART;VALUE=DATE:' + ALL.start, 'DTEND;VALUE=DATE:' + ALL.end,
+      'SUMMARY:' + esc(ALL.title), 'LOCATION:' + esc(CONFIG.location), 'DESCRIPTION:' + esc(details),
       'END:VEVENT',
       'BEGIN:VEVENT', 'UID:ketaki-amogh-muhurat-2026@invite', 'DTSTAMP:' + stamp,
       'DTSTART:20261212T063700Z', 'DTEND:20261212T073000Z',
@@ -447,7 +459,7 @@ function initRsvp() {
 }
 
 /* ======================================================
-   Music (shared file at ../assets/music.mp3)
+   Music (shared file at assets/music.mp3)
    ====================================================== */
 const Music = (() => {
   const audio = $('#bg-music'), btn = $('#music-btn'), MAX = 0.45;

@@ -185,6 +185,7 @@ button { font: inherit; color: inherit; }
 .date-plate .dp-main { background: linear-gradient(180deg, rgba(201, 162, 77, .28), rgba(201, 162, 77, .12)); border-left: 1px solid rgba(201,162,77,.45); border-right: 1px solid rgba(201,162,77,.45); padding: 10px 22px; }
 .date-plate .dp-main b { font-size: 40px; color: #FFF3D2; }
 .date-plate small { font-size: 9.5px; letter-spacing: .22em; margin-top: 2px; }
+.date-plate.single .dp-main { border: 0; padding: 12px 34px; }
 .hero-place { font-family: var(--caps); font-size: 10.5px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold-light); margin: 18px 0 0; }
 
 .scroll-cue {
@@ -336,6 +337,8 @@ body.open:not(.scrolled) .live { bottom: calc(env(safe-area-inset-bottom) + 16px
 .gtk-card svg { stroke: var(--gold-dark); width: 24px; height: 24px; }
 .gtk-card b { display: block; font-size: 18px; margin: 6px 0 2px; }
 .gtk-card span { font-size: 15.5px; color: var(--brown); line-height: 1.4; }
+.gtk.single { grid-auto-columns: 100%; }
+@media (min-width: 600px) { .gtk.single { grid-template-columns: 1fr; } }
 @media (min-width: 600px) { .gtk { grid-auto-flow: row; grid-template-columns: 1fr 1fr; gap: 56px 40px; overflow: visible; } }
 
 /* ---------- RSVP paper ---------- */

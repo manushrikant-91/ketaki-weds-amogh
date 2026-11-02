@@ -3,18 +3,28 @@
 A one-page, jungle-themed invitation site for the 11–13 December 2026 celebrations at Olive Resort, Pench.
 Plain HTML/CSS/JS, hosted free on GitHub Pages. No build step.
 
+## Links
+
+| Page | Link | What it is |
+|---|---|---|
+| **Main invite** | https://manushrikant-91.github.io/ketaki-weds-amogh/ | Full 3-day invitation (11–13 Dec), jungle theme |
+| **Wedding-day invite** | https://manushrikant-91.github.io/ketaki-weds-amogh/wedding/ | Same theme, only the wedding on 12 Dec |
+| RSVP status (family) | https://manushrikant-91.github.io/ketaki-weds-amogh/status/#key=PASSCODE | Passcode-protected dashboard |
+| Archived first version | https://manushrikant-91.github.io/ketaki-weds-amogh/v1/ | The original cream-card design |
+| Old v2 link | https://manushrikant-91.github.io/ketaki-weds-amogh/v2/ | Redirects to the main invite |
+
 ## Files
 
 | File | What it is |
 |---|---|
-| `index.html` | All the text: names, schedule, venue, RSVP form |
-| `style.css` | Colours, fonts and layout (palette and fonts match the printed invite) |
-| `script.js` | Countdown, add-to-calendar, RSVP sending, firefly animation |
+| `index.html` | Main 3-day invite |
+| `wedding/index.html` | Wedding-day-only invite (`<body data-invite="wedding">`) |
+| `jungle/style.css`, `jungle/script.js` | The shared jungle theme. **The schedule for all days lives at the top of `jungle/script.js`** — edit once, both invites update |
 | `config.js` | The one setting: your Google Apps Script URL |
 | `apps-script.gs` | Code for the Google Sheet that collects RSVPs and feeds the status page |
-| `v2/` | The "Into the Jungle" design |
 | `status/` | Passcode-protected RSVP dashboard for family |
-| `assets/` | Jungle photo, vines & bells, ferns, Ganesha, link-preview image |
+| `v1/` | Archived first design |
+| `assets/` | Jungle photo, ferns, Ganesha, icons, music, link-preview image |
 
 ## Turn on RSVPs (one time, ~5 minutes)
 
@@ -49,8 +59,9 @@ If you change `apps-script.gs` later: **Deploy → Manage deployments → ✎ �
 
 ## Editing text
 
-Everything guests read is in `index.html`. Timings live in the three `<section id="day1|day2|day3">` blocks.
-After editing, bump the `?v=1` on `style.css` / `script.js` in `index.html` (to `?v=2`, …) so phones don't show a cached old version.
+- Schedule (times, events, dress codes): the `ALL_DAYS` list at the top of `jungle/script.js`. The wedding-day invite shows only the 12 Dec entry.
+- Names, venue, good-to-know, RSVP questions: `index.html` (main) and `wedding/index.html`.
+- After editing, bump the `?v=` number on the changed file in both pages so phones don't show a cached copy.
 
 ## Credits
 
