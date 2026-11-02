@@ -23,7 +23,8 @@
  * so the same URL keeps working.
  */
 
-const HEADERS = ['Submitted at', 'Name', 'Phone', 'Attending', 'Guests', 'Days', 'Needs pickup', 'Message'];
+const HEADERS = ['Submitted at', 'Name', 'Phone', 'Attending', 'Guests', 'Days', 'Needs pickup', 'Message', 'Invite'];
+const INVITES = { full: 'Full (3 days)', wedding: 'Wedding day' };
 
 function sheet_() {
   return SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
@@ -37,6 +38,8 @@ function doPost(e) {
     if (sheet.getLastRow() === 0) {
       sheet.appendRow(HEADERS);
       sheet.setFrozenRows(1);
+    } else if (!sheet.getRange(1, HEADERS.length).getValue()) {
+      sheet.getRange(1, HEADERS.length).setValue(HEADERS[HEADERS.length - 1]);   // sheets made before the Invite column existed
     }
 
     const p = (e && e.parameter) || {};
@@ -52,7 +55,8 @@ function doPost(e) {
       Number(p.guests) || 0,
       clean(p.days),
       clean(p.pickup),
-      clean(p.message)
+      clean(p.message),
+      INVITES[p.invite] || ''
     ]);
     return json({ ok: true });
   } catch (err) {
@@ -85,7 +89,8 @@ function list_(key) {
     guests: Number(r[4]) || 0,
     days: text(r[5]),
     pickup: text(r[6]),
-    message: text(r[7])
+    message: text(r[7]),
+    invite: text(r[8])
   }));
   return json({ ok: true, rows: rows, updated: new Date().toISOString() });
 }

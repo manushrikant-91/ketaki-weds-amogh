@@ -46,6 +46,8 @@ Plain HTML/CSS/JS, hosted free on GitHub Pages. No build step.
 
 Until step 7 is done, the forms tell guests to reply on WhatsApp instead — nothing is silently lost.
 
+The sheet's last column, **Invite**, says which invitation each RSVP came from (Full (3 days) / Wedding day).
+
 If you change `apps-script.gs` later: **Deploy → Manage deployments → ✎ → Version: New version → Deploy** (keeps the same URL).
 
 ## RSVP status page (family only)

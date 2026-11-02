@@ -163,7 +163,8 @@ document.documentElement.classList.add('js');
       guests: isYes ? fd.get('guests') : '0',
       days: isYes ? fd.getAll('days').join(', ') : '',
       pickup: isYes ? (fd.get('pickup') || '') : '',
-      message: (fd.get('message') || '').trim()
+      message: (fd.get('message') || '').trim(),
+      invite: 'full'
     });
 
     btn.disabled = true;

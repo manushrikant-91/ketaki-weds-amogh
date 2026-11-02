@@ -84,6 +84,7 @@
     .badge.yes { background: rgba(47,107,67,.14); color: var(--leaf); }
     .badge.no { background: rgba(163,38,43,.12); color: var(--red); }
     .badge.pick { background: rgba(201,162,77,.2); color: var(--gold-dark); }
+    .badge.inv { background: rgba(29,74,49,.08); color: var(--forest-2); border: 1px solid rgba(29,74,49,.2); }
     .row1 .when { margin-left: auto; font-size: 14px; color: var(--muted); font-style: italic; }
     .meta { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 4px; font-size: 15.5px; color: #4a3d28; }
     .meta a { color: var(--forest-2); text-decoration: none; border-bottom: 1px dotted var(--forest-2); }
@@ -147,6 +148,8 @@
             <button class="chip" type="button" data-f="yes" aria-pressed="false">Coming<span class="c" id="c-yes"></span></button>
             <button class="chip" type="button" data-f="no" aria-pressed="false">Not coming<span class="c" id="c-no"></span></button>
             <button class="chip" type="button" data-f="pick" aria-pressed="false">Pickup<span class="c" id="c-pick"></span></button>
+            <button class="chip" type="button" data-f="full" aria-pressed="false">3-day invite<span class="c" id="c-full"></span></button>
+            <button class="chip" type="button" data-f="wedding" aria-pressed="false">Wedding-day invite<span class="c" id="c-wedding"></span></button>
           </div>
           <input class="search" id="q" type="search" placeholder="Search names or notes" aria-label="Search">
         </div>
@@ -215,6 +218,8 @@
     }
 
     const isYes = r => /^y/i.test(r.attending);
+    const fromWedding = r => /^wedding/i.test(r.invite || '');
+    const fromFull = r => /^full/i.test(r.invite || '');
     const needsPick = r => isYes(r) && /^y/i.test(r.pickup);
     const goesOn = (r, d) => isYes(r) && (r.days || '').includes(d + ' Dec');
 
@@ -226,6 +231,7 @@
       $('k-hh').textContent = yes.length ? `from ${yes.length} RSVP${yes.length > 1 ? 's' : ''}` : '';
       $('k-resp').textContent = rows.length; $('k-yes').textContent = yes.length; $('k-no').textContent = no.length; $('k-pick').textContent = pickGuests;
       $('c-all').textContent = rows.length; $('c-yes').textContent = yes.length; $('c-no').textContent = no.length; $('c-pick').textContent = rows.filter(needsPick).length;
+      $('c-full').textContent = rows.filter(fromFull).length; $('c-wedding').textContent = rows.filter(fromWedding).length;
 
       const perDay = DAYS.map(([d]) => rows.filter(r => goesOn(r, d)).reduce((s, r) => s + (r.guests || 0), 0));
       const max = Math.max(1, ...perDay);
@@ -235,7 +241,7 @@
 
       const q = $('q').value.trim().toLowerCase();
       const list = rows.filter(r =>
-        (filter === 'all' || (filter === 'yes' && isYes(r)) || (filter === 'no' && !isYes(r)) || (filter === 'pick' && needsPick(r))) &&
+        (filter === 'all' || (filter === 'yes' && isYes(r)) || (filter === 'no' && !isYes(r)) || (filter === 'pick' && needsPick(r)) || (filter === 'full' && fromFull(r)) || (filter === 'wedding' && fromWedding(r))) &&
         (!q || (r.name + ' ' + r.message + ' ' + r.phone).toLowerCase().includes(q)));
 
       $('list').innerHTML = list.length ? list.map(r => {
@@ -245,6 +251,7 @@
           <div class="row1"><span class="name">${esc(r.name)}</span>
             <span class="badge ${isYes(r) ? 'yes' : 'no'}">${isYes(r) ? 'Coming' : 'Not coming'}</span>
             ${needsPick(r) ? '<span class="badge pick">Pickup</span>' : ''}
+            ${fromWedding(r) ? '<span class="badge inv">Wedding-day invite</span>' : fromFull(r) ? '<span class="badge inv">3-day invite</span>' : ''}
             <span class="when">${esc(ago(r.at))}</span></div>
           <div class="meta">
             ${isYes(r) ? `<span>${r.guests} guest${r.guests === 1 ? '' : 's'}</span><span>${esc(r.days || '—')}</span>` : ''}
@@ -264,8 +271,8 @@
     }
 
     function csv() {
-      const cols = ['at', 'name', 'phone', 'attending', 'guests', 'days', 'pickup', 'message'];
-      const head = ['Submitted at', 'Name', 'Phone', 'Attending', 'Guests', 'Days', 'Needs pickup', 'Message'];
+      const cols = ['at', 'name', 'phone', 'attending', 'guests', 'days', 'pickup', 'message', 'invite'];
+      const head = ['Submitted at', 'Name', 'Phone', 'Attending', 'Guests', 'Days', 'Needs pickup', 'Message', 'Invite'];
       const cell = v => { v = String(v ?? ''); if (/^[=+\-@]/.test(v)) v = "'" + v; return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
       const text = [head, ...rows.map(r => cols.map(c => r[c]))].map(r => r.map(cell).join(',')).join('\r\n');
       const url = URL.createObjectURL(new Blob(['﻿' + text], { type: 'text/csv;charset=utf-8' }));

@@ -438,7 +438,8 @@ function initRsvp() {
       guests: isYes ? fd.get('guests') : '0',
       days: isYes ? fd.getAll('days').join(', ') : '',
       pickup: isYes ? (fd.get('pickup') || '') : '',
-      message: (fd.get('message') || '').trim()
+      message: (fd.get('message') || '').trim(),
+      invite: WEDDING_ONLY ? 'wedding' : 'full'
     });
     btn.disabled = true; setStatus('Sending…');
     const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 20000);
