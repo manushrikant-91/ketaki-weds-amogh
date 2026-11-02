@@ -36,7 +36,7 @@ const DAYS = [
         dress: 'Multicolour, multiprint', sw: ['#E8452C', '#F2B705', '#2E9CCA', '#8BC34A', '#D63AAF'], petals: true },
       { s: '15:00', e: '16:00', t: '3 – 4 PM', title: 'Rest & wind down' },
       { s: '16:00', e: '17:00', t: '4 PM', title: 'High tea' },
-      { s: '17:00', e: '19:00', t: '5 – 7 PM', title: 'Shrimanti Pujan' },
+      { s: '17:00', e: '19:00', t: '5 – 7 PM', title: 'Seemant Poojan' },
       { s: '19:00', e: '20:00', t: '7 – 8 PM', title: 'Ring ceremony' },
       { s: '20:00', e: '22:00', t: '8 – 10 PM', title: 'Sangeet & dinner', note: 'An evening of music & promises',
         dress: 'Glitz and glam', sw: ['#D4AF37', '#C0C0C0', '#1A1A1A'] }
