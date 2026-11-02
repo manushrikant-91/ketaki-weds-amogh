@@ -50,8 +50,8 @@ const ALL_DAYS = [
     date: '2026-12-12', weekday: 'Saturday', title: 'The Big Day', theme: 'shaadi', icon: 'kalash',
     tagline: 'Muhurat, Saptapadi and a winter night of music',
     items: [
-      { s: '07:00', e: '09:00', t: '7:00 AM', title: 'Tea & coffee' },
-      { s: '09:00', e: '10:30', t: '9:00 AM', title: 'Breakfast' },
+      { s: '07:00', e: '09:00', t: '7:00 AM', title: 'Tea & coffee', stayOnly: true },   // stayOnly: hidden on the wedding-day invite
+      { s: '09:00', e: '10:30', t: '9:00 AM', title: 'Breakfast', stayOnly: true },
       { s: '12:07', e: '13:00', t: '12:07 PM', title: 'The wedding muhurat', note: 'The ceremony we’ve been dreaming of',
         dress: 'Best foot forward in traditional attire', sw: ['#A3262B', '#C9A24D', '#F3E3C3'], key: true },
       { s: '13:00', e: '15:00', t: '1 – 3 PM', title: 'Lunch', note: 'with the Saptapadi rituals meanwhile' },
@@ -72,7 +72,9 @@ const ALL_DAYS = [
     ]
   }
 ];
-const DAYS = WEDDING_ONLY ? [ALL_DAYS[1]] : ALL_DAYS;
+const DAYS = WEDDING_ONLY
+  ? [{ ...ALL_DAYS[1], items: ALL_DAYS[1].items.filter(it => !it.stayOnly) }]
+  : ALL_DAYS;
 
 const ICONS = {
   marigold: '<svg viewBox="0 0 60 60" class="day-icon" aria-hidden="true">' +
